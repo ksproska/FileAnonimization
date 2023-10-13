@@ -9,10 +9,12 @@ string GetTextFromFile()
     string readText = File.ReadAllText(filepath);
     return readText;
 }
-
-string readText = GetTextFromFile();
+var pdfConverter = new PdfConverter();
+string readText = pdfConverter.ExtractFromPdf();//GetTextFromFile();
 Console.WriteLine("\"Original\":   " + readText);
 
 var anonimizator = new Anonimizator();
 string processedText = anonimizator.Anonimize(readText);
 Console.WriteLine("\"Anonymized\": " + processedText);
+
+
