@@ -13,6 +13,7 @@ string GetTextFromFile()
 string readText = GetTextFromFile();
 Console.WriteLine("\"Original\":   " + readText);
 
+
 var anonimizator = new Anonimizator();
 string processedText = anonimizator.Anonimize(readText);
 Console.WriteLine("\"Anonymized\": " + processedText);

@@ -1,14 +1,17 @@
+using System.Diagnostics.SymbolStore;
 using System.Text.RegularExpressions;
 
 namespace FileAnonimization;
 
 public class Anonimizator
 {
+    private CsvDataReader csvData = new CsvDataReader();
     public string Anonimize(string text)
     {
         var punctuation = text.Where(Char.IsPunctuation).Distinct().ToArray();
         var words = text.Split().Select(x => x.Trim(punctuation));
         var wordsToAnonimize = words.Where(x => DoesContainSensitiveInformation(x));
+        Console.WriteLine(string.Join(",", wordsToAnonimize));
     
         foreach (string word in wordsToAnonimize)
         {
@@ -17,12 +20,9 @@ public class Anonimizator
         return text;
     }
 
-    private static bool DoesContainSensitiveInformation(string word)
+    private bool DoesContainSensitiveInformation(string word)
     {
-        if (IsPhoneNumber(word)) return true;
-        if (IsPesel(word)) return true;
-        if (IsDate(word)) return true;
-        return false;
+        return IsPhoneNumber(word) || IsPesel(word) || IsDate(word) || IsName(word) || IsSurname(word);
     }
 
     private static bool IsPhoneNumber(string text)
@@ -38,5 +38,15 @@ public class Anonimizator
     private static bool IsDate(string text)
     {
         return Regex.IsMatch(text, @"^(\d{1,2})\.(\d{1,2})\.(\d{4})$");
+    }
+
+    private bool IsName(string text)
+    {
+        return csvData.GetNames().Contains(text.ToUpper());
+    }
+    
+    private bool IsSurname(string text)
+    {
+        return csvData.GetSurnames().Contains(text.ToUpper());
     }
 }
