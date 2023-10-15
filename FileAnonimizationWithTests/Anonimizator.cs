@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -11,10 +12,17 @@ public class Anonimizator
         var words = text.Split().Select(x => x.Trim(punctuation));
         var wordsToAnonimize = words.Where(x => DoesContainSensitiveInformation(x));
     
+        text = AnonimizeToStarsOfTheSameLength(text, wordsToAnonimize);
+        return text;
+    }
+
+    public static string AnonimizeToStarsOfTheSameLength(string text, IEnumerable<string> wordsToAnonimize)
+    {
         foreach (string word in wordsToAnonimize)
         {
             text = text.Replace(word, new String('*', word.Length));
         }
+
         return text;
     }
 

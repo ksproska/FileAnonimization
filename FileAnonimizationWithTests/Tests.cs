@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using NUnit.Framework;
 
@@ -18,14 +19,39 @@ namespace FileAnonimizationWithTests
         }
 
         [Test]
-        public void Test1()
+        public void TestReadingFileWorks()
         {
             string readText = GetTextFromFile();
-            Console.WriteLine("\"Original\":   " + readText);
+            Assert.IsNotEmpty(readText);
+        }
 
+        [Test]
+        public void TestAnonimizeToStarsOfTheSameLength()
+        {
+            var original = "My name is Kamila and my phone number is 123456789";
+            var wordsToAnonimize = new[] { "Kamila", "123456789" };
+            var expected = "My name is ****** and my phone number is *********";
+
+            var actual = Anonimizator.AnonimizeToStarsOfTheSameLength(original, wordsToAnonimize);
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        public void TestAnonimizationWorked()
+        {
             var anonimizator = new Anonimizator();
-            string processedText = anonimizator.Anonimize(readText);
-            Console.WriteLine("\"Anonymized\": " + processedText);
+            var positive_test_cases = new List<string>
+            {
+                "284192537",
+                "12345678910",
+                "14.03.2000"
+            };
+
+            foreach (string testCase in positive_test_cases)
+            {
+                string processedText = anonimizator.Anonimize(testCase);
+                Assert.AreNotEqual(testCase, processedText);
+            }
         }
     }
 }
