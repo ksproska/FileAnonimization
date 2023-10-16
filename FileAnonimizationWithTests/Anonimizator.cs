@@ -46,6 +46,13 @@ public class Anonimizator
 
     private static bool IsDate(string text)
     {
-        return Regex.IsMatch(text, @"^(\d{1,2})\.(\d{1,2})\.(\d{4})$");
+        var pattern = @"^" 
+                      + @"(\d{1,2})\.(\d{1,2})\.(\d{4})" 
+                      + @"|(\d{1,2})\-(\d{1,2})\-(\d{4})" 
+                      + @"|(\d{4})\-(\d{1,2})\-(\d{1,2})" 
+                      + @"|(\d{4})\/(\d{1,2})\/(\d{1,2})" 
+                      + @"|(\d{1,2})\/(\d{1,2})\/(\d{4})" 
+                      + @"$";
+        return Regex.IsMatch(text, pattern);
     }
 }

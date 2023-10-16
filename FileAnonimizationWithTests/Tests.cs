@@ -44,7 +44,11 @@ namespace FileAnonimizationWithTests
             {
                 "284192537",
                 "12345678910",
-                "14.03.2000"
+                "14.03.2000",
+                "14-03-2000",
+                "2000-03-14",
+                "2000/03/14",
+                "14/03/2000"
             };
 
             foreach (string testCase in positive_test_cases)
