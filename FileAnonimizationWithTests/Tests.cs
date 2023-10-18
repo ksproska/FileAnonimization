@@ -43,6 +43,8 @@ namespace FileAnonimizationWithTests
             var positive_test_cases = new List<string>
             {
                 "284192537",
+                "+46284192537",
+                "284-192-537",
                 "86111771763",
                 "14.03.2000",
                 "14-03-2000",

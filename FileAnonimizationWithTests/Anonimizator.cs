@@ -36,7 +36,12 @@ public class Anonimizator
 
     private static bool IsPhoneNumber(string text)
     {
-        return Regex.IsMatch(text, @"^[0-9]{9}$");
+        string pattern = @"^" 
+                         + @"[0-9]{9}" 
+                         + @"|([0-9]{3})\-([0-9]{3})\-([0-9]{3})" 
+                         + @"|\+[0-9]{11}" 
+                         + @"$";
+        return Regex.IsMatch(text, pattern);
     }
 
     public static bool IsPesel(string text)
