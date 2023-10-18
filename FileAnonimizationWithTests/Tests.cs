@@ -42,6 +42,9 @@ namespace FileAnonimizationWithTests
             var anonimizator = new Anonimizator();
             var positive_test_cases = new List<string>
             {
+                "Kamila",
+                "Ola",
+                "Alexandra",
                 "284192537",
                 "+46284192537",
                 "284-192-537",

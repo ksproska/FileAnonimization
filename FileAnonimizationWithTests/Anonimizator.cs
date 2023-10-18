@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.SymbolStore;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -31,7 +32,13 @@ public class Anonimizator
         if (IsPhoneNumber(word)) return true;
         if (IsPesel(word)) return true;
         if (IsDate(word)) return true;
+        if (InName(word)) return true;
         return false;
+    }
+
+    private static bool InName(string text)
+    {
+        return Regex.IsMatch(text, @"^[A-Z][a-z]{2,12}$");
     }
 
     private static bool IsPhoneNumber(string text)

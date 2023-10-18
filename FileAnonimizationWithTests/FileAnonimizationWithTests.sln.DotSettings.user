@@ -4,6 +4,11 @@
     &lt;TestId&gt;NUnit3x::FCFBD3F8-A8A1-46DB-8DB4-273A03878FD5::.NETFramework,Version=v4.8::FileAnonimizationWithTests.Tests.TestAnonimizationWorked&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=e947c8b5_002D9b26_002D4601_002Db26a_002D9ae402b2a6f7/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="Tests" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;TestAncestor&gt;
+    &lt;TestId&gt;NUnit3x::FCFBD3F8-A8A1-46DB-8DB4-273A03878FD5::.NETFramework,Version=v4.8::FileAnonimizationWithTests.Tests&lt;/TestId&gt;
+  &lt;/TestAncestor&gt;
+&lt;/SessionState&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=f3ffea8b_002D1870_002D49be_002Da36d_002Ddac7a5cacecd/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="Test1" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
   &lt;TestAncestor&gt;
     &lt;TestId&gt;NUnit3x::FCFBD3F8-A8A1-46DB-8DB4-273A03878FD5::.NETFramework,Version=v4.8::FileAnonimizationWithTests.Tests&lt;/TestId&gt;
