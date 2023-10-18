@@ -43,7 +43,7 @@ namespace FileAnonimizationWithTests
             var positive_test_cases = new List<string>
             {
                 "284192537",
-                "12345678910",
+                "86111771763",
                 "14.03.2000",
                 "14-03-2000",
                 "2000-03-14",
@@ -55,6 +55,29 @@ namespace FileAnonimizationWithTests
             {
                 string processedText = anonimizator.Anonimize(testCase);
                 Assert.AreNotEqual(testCase, processedText);
+            }
+        }
+
+        [Test]
+        public void TestPesel()
+        {
+            var positive_test_cases = new List<string>
+            {
+                "86111771763",
+                "94121916548",
+                "02292498871",
+                "07320263197",
+                "99090876327",
+                "54111815741",
+                "05262075575",
+                "80040719151",
+                "68011171726",
+                "85111139586"
+            };
+
+            foreach (string testCase in positive_test_cases)
+            {
+                Assert.True(Anonimizator.IsPesel(testCase));
             }
         }
     }
