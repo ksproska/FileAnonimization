@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.SymbolStore;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -31,17 +32,47 @@ public class Anonimizator
         if (IsPhoneNumber(word)) return true;
         if (IsPesel(word)) return true;
         if (IsDate(word)) return true;
+        if (InName(word)) return true;
         return false;
+    }
+
+    private static bool InName(string text)
+    {
+        return Regex.IsMatch(text, @"^[A-Z][a-z]{2,12}$");
     }
 
     private static bool IsPhoneNumber(string text)
     {
-        return Regex.IsMatch(text, @"^[0-9]{9}$");
+        string pattern = @"^" 
+                         + @"[0-9]{9}" 
+                         + @"|([0-9]{3})\-([0-9]{3})\-([0-9]{3})" 
+                         + @"|\+[0-9]{11}" 
+                         + @"$";
+        return Regex.IsMatch(text, pattern);
     }
 
-    private static bool IsPesel(string text)
+    public static bool IsPesel(string text)
     {
-        return Regex.IsMatch(text, @"^[0-9]{11}$");
+        if (!Regex.IsMatch(text, @"^[0-9]{11}$"))
+        {
+            return false;
+        }
+        return HasPeselCorrectChecksum(text);
+    }
+
+    private static bool HasPeselCorrectChecksum(string text)
+    {
+        var sum = 0;
+        var weights = new[] { 1, 3, 7, 9, 1, 3, 7, 9, 1, 3 }; // https://obywatel.gov.pl/pl/dokumenty-i-dane-osobowe/czym-jest-numer-pesel
+        for (int i = 0; i < weights.Length; i++)
+        {
+            int numbI = text[i] - '0';
+            int digitOfMultiplication = (numbI * weights[i]) % 10;
+            sum += digitOfMultiplication;
+        }
+        int controlNumb = text[text.Length - 1] - '0';
+        int digitOfSum = (sum % 10);
+        return 10 - digitOfSum == controlNumb;
     }
 
     private static bool IsDate(string text)
