@@ -8,7 +8,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Compile Remove="CheckNamesAndSurnames.cs" />
+      <PackageReference Include="IFilterTextReader" Version="1.7.10" />
+      <PackageReference Include="iTextSharp" Version="5.5.13.3" />
+      <PackageReference Include="PdfPig" Version="0.1.8" />
+      <PackageReference Include="sautinsoft.pdffocus" Version="2023.5.10" />
     </ItemGroup>
 
 </Project>
