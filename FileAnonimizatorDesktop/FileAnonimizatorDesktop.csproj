@@ -1,5 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <Import Project="packages\NUnitTestAdapter.2.3.0\build\NUnitTestAdapter.props" Condition="Exists('packages\NUnitTestAdapter.2.3.0\build\NUnitTestAdapter.props')" />
+    <Import Project="packages\NUnit.4.0.0-beta.1\build\NUnit.props" Condition="Exists('packages\NUnit.4.0.0-beta.1\build\NUnit.props')" />
     <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
     <PropertyGroup>
         <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -157,6 +159,12 @@
           <HintPath>packages\Microsoft.SharePoint.Client.Online.CSOM.15.0.4919.1000\lib\net40-full\Microsoft.Sharepoint.WorkflowActions.dll</HintPath>
           <Private>True</Private>
         </Reference>
+        <Reference Include="nunit.framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
+          <HintPath>packages\NUnit.4.0.0-beta.1\lib\net462\nunit.framework.dll</HintPath>
+        </Reference>
+        <Reference Include="nunit.framework.legacy, Version=4.0.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
+          <HintPath>packages\NUnit.4.0.0-beta.1\lib\net462\nunit.framework.legacy.dll</HintPath>
+        </Reference>
         <Reference Include="System" />
         <Reference Include="System.Core" />
         <Reference Include="System.Xml.Linq" />
@@ -180,6 +188,7 @@
         </Compile>
         <Compile Include="Program.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
+        <Compile Include="Tests.cs" />
         <Compile Include="TextAnonimizator.cs" />
         <Compile Include="WordFileExtractor.cs" />
         <EmbeddedResource Include="Form1.resx">
@@ -209,4 +218,11 @@
         <None Include="App.config" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+    <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+      <PropertyGroup>
+        <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105.The missing file is {0}.</ErrorText>
+      </PropertyGroup>
+      <Error Condition="!Exists('packages\NUnit.4.0.0-beta.1\build\NUnit.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\NUnit.4.0.0-beta.1\build\NUnit.props'))" />
+      <Error Condition="!Exists('packages\NUnitTestAdapter.2.3.0\build\NUnitTestAdapter.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\NUnitTestAdapter.2.3.0\build\NUnitTestAdapter.props'))" />
+    </Target>
 </Project>
