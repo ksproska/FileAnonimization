@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -48,7 +49,13 @@ namespace FileAnonimizatorDesktop
                 string text = WordFileExtractor.UploadAndExtractWordFile(file);
                 try
                 {
-                    var anonimizator = new TextAnonimizator();
+                    string workingDirectory = Environment.CurrentDirectory;
+                    string projectDirectory = Directory.GetParent(workingDirectory).Parent.FullName;
+                    string namespath = Path.Combine(projectDirectory, "data", "names.csv");
+                    string surnamespath = Path.Combine(projectDirectory, "data", "surnames.csv");
+                    var csvDataReader = new CsvDataReader(namespath, surnamespath);
+                    
+                    var anonimizator = new TextAnonimizator(csvDataReader.GetNames(), csvDataReader.GetSurnames());
                     string processedText = anonimizator.Anonimize(text);
                     var punctuation = text.Where(Char.IsPunctuation).Distinct().ToArray();
                     var words = text.Split().Select(x => x.Trim(punctuation));

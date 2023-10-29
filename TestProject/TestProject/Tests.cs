@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using FileAnonimizatorDesktop;
 using NUnit.Framework;
 
@@ -9,22 +7,6 @@ namespace TestProject
     [TestFixture]
     public class Tests
     {
-        string GetTextFromFile()
-        {
-            string workingDirectory = Environment.CurrentDirectory;
-            string projectDirectory = Directory.GetParent(workingDirectory).Parent.Parent.FullName;
-            string filepath = Path.Combine(projectDirectory, "FileAnonimizationWithTests", "sample.txt");
-
-            string readText = File.ReadAllText(filepath);
-            return readText;
-        }
-
-        // [Test]
-        // public void TestReadingFileWorks()
-        // {
-        //     string readText = GetTextFromFile();
-        //     Assert.IsNotEmpty(readText);
-        // }
 
         [Test]
         public void TestAnonimizeToStarsOfTheSameLength()
@@ -38,14 +20,14 @@ namespace TestProject
         }
 
         [Test]
-        public void TestAnonimizationWorked()
+        public void TestAnonimizationPositiveCases()
         {
-            var anonimizator = new TextAnonimizator();
-            var positive_test_cases = new List<string>
+            var anonimizator = new TextAnonimizator(new List<string>(){"KAMILA", "OLA"}, new List<string>(){"SPROSKA"});
+            var positiveTestCases = new List<string>
             {
                 "Kamila",
                 "Ola",
-                "Alexandra",
+                "Sproska",
                 "284192537",
                 "+46284192537",
                 "284-192-537",
@@ -57,7 +39,7 @@ namespace TestProject
                 "14/03/2000"
             };
 
-            foreach (string testCase in positive_test_cases)
+            foreach (string testCase in positiveTestCases)
             {
                 string processedText = anonimizator.Anonimize(testCase);
                 Assert.AreNotEqual(testCase, processedText);
@@ -65,9 +47,26 @@ namespace TestProject
         }
 
         [Test]
+        public void TestAnonimizationNegativeCases()
+        {
+            var anonimizator = new TextAnonimizator(new List<string>(), new List<string>());
+            var negativeTestCases = new List<string>
+            {
+                "Dzień",
+                "12345678910",
+            };
+
+            foreach (string testCase in negativeTestCases)
+            {
+                string processedText = anonimizator.Anonimize(testCase);
+                Assert.AreEqual(testCase, processedText);
+            }
+        }
+
+        [Test]
         public void TestPesel()
         {
-            var positive_test_cases = new List<string>
+            var positiveTestCases = new List<string>
             {
                 "86111771763",
                 "94121916548",
@@ -81,9 +80,22 @@ namespace TestProject
                 "85111139586"
             };
 
-            foreach (string testCase in positive_test_cases)
+            foreach (string testCase in positiveTestCases)
             {
                 Assert.True(TextAnonimizator.IsPesel(testCase));
+            }
+        }
+        [Test]
+        public void TestPeselNegative()
+        {
+            var positiveTestCases = new List<string>
+            {
+                "12345678910"
+            };
+
+            foreach (string testCase in positiveTestCases)
+            {
+                Assert.False(TextAnonimizator.IsPesel(testCase));
             }
         }
     }

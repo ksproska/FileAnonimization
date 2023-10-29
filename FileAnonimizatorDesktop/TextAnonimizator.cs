@@ -11,8 +11,14 @@ namespace FileAnonimizatorDesktop
 {
     public class TextAnonimizator
     {
-        
-        private CsvDataReader csvData = new CsvDataReader();
+        private readonly List<String> _names;
+        private readonly List<String> _surnames;
+
+        public TextAnonimizator(List<String> names, List<String> surnames)
+        {
+            _names = names;
+            _surnames = surnames;
+        }
 
         public string Anonimize(string text)
         {
@@ -41,11 +47,7 @@ namespace FileAnonimizatorDesktop
 
         private static bool IsPhoneNumber(string text)
         {
-            string pattern = @"^" 
-                             + @"[0-9]{9}" 
-                             + @"|([0-9]{3})\-([0-9]{3})\-([0-9]{3})" 
-                             + @"|\+[0-9]{11}" 
-                             + @"$";
+            string pattern = @"^(\+[0-9]{11}|[0-9]{9}|[0-9]{3}-[0-9]{3}-[0-9]{3})$";
             return Regex.IsMatch(text, pattern);
         }
 
@@ -70,7 +72,7 @@ namespace FileAnonimizatorDesktop
             }
             int controlNumb = text[text.Length - 1] - '0';
             int digitOfSum = (sum % 10);
-            return 10 - digitOfSum == controlNumb;
+            return (10 - digitOfSum) == controlNumb;
         }
 
         private static bool IsDate(string text)
@@ -91,7 +93,7 @@ namespace FileAnonimizatorDesktop
             {
                 return false;
             }
-            return csvData.GetNames().Contains(text.ToUpper());
+            return _names.Contains(text.ToUpper());
         }
 
         private bool IsSurname(string text)
@@ -100,7 +102,7 @@ namespace FileAnonimizatorDesktop
             {
                 return false;
             }
-            return csvData.GetSurnames().Contains(text.ToUpper());
+            return _surnames.Contains(text.ToUpper());
         }
     }
 }

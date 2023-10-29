@@ -3,47 +3,39 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using DocumentFormat.OpenXml.Bibliography;
 
 namespace FileAnonimizatorDesktop
 {
     public class CsvDataReader
     {
-        private List<String> names = new List<string>();
-        private List<String> surnames = new List<string>();
+        private readonly List<String> _names = new List<string>();
+        private readonly List<String> _surnames = new List<string>();
 
-        public CsvDataReader()
+        public CsvDataReader(string namesPath, string surnamesPath)
         {
-            string workingDirectory = Environment.CurrentDirectory;
-            Console.WriteLine(workingDirectory);
-            string projectDirectory = Directory.GetParent(workingDirectory).Parent.FullName;
-            string namespath = Path.Combine(projectDirectory, "data", "names.csv");
-            var csvRowsNames = System.IO.File.ReadAllLines(namespath, Encoding.UTF8).ToList();
-
-            foreach (var row in csvRowsNames.Skip(1))
+            List<String> csvRowsNames = File.ReadAllLines(namesPath, Encoding.UTF8).ToList();
+            foreach (string row in csvRowsNames.Skip(1))
             {
-                var columns = row.Split(',');
-                names.Add(columns[0]);
+                string[] columns = row.Split(',');
+                _names.Add(columns[0]);
             }
 
-            string surnamespath = Path.Combine(projectDirectory, "data", "surnames.csv");
-            var csvRowsSurnames = System.IO.File.ReadAllLines(surnamespath, Encoding.UTF8).ToList();
-
-            foreach (var row in csvRowsSurnames.Skip(1))
+            List<String> csvRowsSurnames = File.ReadAllLines(surnamesPath, Encoding.UTF8).ToList();
+            foreach (string row in csvRowsSurnames.Skip(1))
             {
-                var columns = row.Split(',');
-                surnames.Add(columns[0]);
+                string[] columns = row.Split(',');
+                _surnames.Add(columns[0]);
             }
         }
     
         public List<String> GetNames()
         {
-            return names;
+            return _names;
         }
 
         public List<String> GetSurnames()
         {
-            return surnames;
+            return _surnames;
         }
     }
 }
