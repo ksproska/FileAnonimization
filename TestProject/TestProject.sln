@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestProject", "TestProject\TestProject.csproj", "{86D07590-67DE-4557-AB07-7244BF428968}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileAnonimizatorDesktop", "..\FileAnonimizatorDesktop\FileAnonimizatorDesktop.csproj", "{B7C48304-DFD2-43ED-ACB7-3E675F80E77C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{86D07590-67DE-4557-AB07-7244BF428968}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{86D07590-67DE-4557-AB07-7244BF428968}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{86D07590-67DE-4557-AB07-7244BF428968}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{86D07590-67DE-4557-AB07-7244BF428968}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B7C48304-DFD2-43ED-ACB7-3E675F80E77C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7C48304-DFD2-43ED-ACB7-3E675F80E77C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7C48304-DFD2-43ED-ACB7-3E675F80E77C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7C48304-DFD2-43ED-ACB7-3E675F80E77C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

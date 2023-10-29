@@ -49,7 +49,7 @@ namespace FileAnonimizatorDesktop
             return Regex.IsMatch(text, pattern);
         }
 
-        private static bool IsPesel(string text)
+        public static bool IsPesel(string text)
         {
             if (!Regex.IsMatch(text, @"^[0-9]{11}$"))
             {
