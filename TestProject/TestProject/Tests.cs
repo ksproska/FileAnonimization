@@ -15,7 +15,7 @@ namespace TestProject
             var wordsToAnonimize = new[] { "Kamila", "123456789" };
             var expected = "My name is ****** and my phone number is *********";
 
-            var actual = TextAnonimizator.AnonimizeToStarsOfTheSameLength(original, wordsToAnonimize);
+            var actual = new TextAnonimizator(new List<string>(), new List<string>()).AnonimizeToStarsOfTheSameLength(original, wordsToAnonimize);
             Assert.AreEqual(expected, actual);
         }
 

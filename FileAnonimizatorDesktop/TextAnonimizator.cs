@@ -35,7 +35,7 @@ namespace FileAnonimizatorDesktop
             return wordsToAnonimize;
         }
 
-        public static string AnonimizeToStarsOfTheSameLength(string text, IEnumerable<string> wordsToAnonimize)
+        public string AnonimizeToStarsOfTheSameLength(string text, IEnumerable<string> wordsToAnonimize)
         {
             foreach (string word in wordsToAnonimize)
             {

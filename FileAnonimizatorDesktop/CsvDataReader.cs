@@ -8,11 +8,14 @@ namespace FileAnonimizatorDesktop
 {
     public class CsvDataReader
     {
-        private readonly List<String> _names = new List<string>();
-        private readonly List<String> _surnames = new List<string>();
+        private readonly List<String> _names;
+        private readonly List<String> _surnames;
 
         public CsvDataReader(string namesPath, string surnamesPath)
         {
+            _names = new List<string>();
+            _surnames = new List<string>();
+            
             List<String> csvRowsNames = File.ReadAllLines(namesPath, Encoding.UTF8).ToList();
             foreach (string row in csvRowsNames.Skip(1))
             {
