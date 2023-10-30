@@ -9,45 +9,51 @@ using DocumentFormat.OpenXml.Wordprocessing;
 
 namespace FileAnonimizatorDesktop
 {
-    public class TextAnonimizator
+    public class TextAnonymizator
     {
         private readonly List<String> _names;
         private readonly List<String> _surnames;
 
-        public TextAnonimizator(List<String> names, List<String> surnames)
+        public TextAnonymizator(List<String> names, List<String> surnames)
         {
             _names = names;
             _surnames = surnames;
         }
 
-        public string Anonimize(string text)
+        public string Anonymize(string text)
         {
-            var wordsToAnonimize = GetWordsToAnonimize(text);
-            text = AnonimizeToStarsOfTheSameLength(text, wordsToAnonimize);
+            var wordsToAnonymize = GetWordsToAnonimize(text);
+            text = AnonymizeToStarsOfTheSameLength(text, wordsToAnonymize);
             return text;
         }
 
-        public IEnumerable<string> GetWordsToAnonimize(string text)
+        public IEnumerable<(string, string)> GetWordsToAnonimize(string text)
         {
             var punctuation = text.Where(Char.IsPunctuation).Distinct().ToArray();
             var words = text.Split().Select(x => x.Trim(punctuation));
-            var wordsToAnonimize = words.Where(x => DoesContainSensitiveInformation(x));
-            return wordsToAnonimize;
+            var wordsToAnonymize = words.Select(x => (x, GetSensitiveInformationType(x))).Where(x => x.Item2 != "");
+            return wordsToAnonymize;
         }
 
-        public string AnonimizeToStarsOfTheSameLength(string text, IEnumerable<string> wordsToAnonimize)
+        public string AnonymizeToStarsOfTheSameLength(string text, IEnumerable<(string, string)> wordsToAnonimize)
         {
-            foreach (string word in wordsToAnonimize)
+            foreach ((string, string ) wordWithType in wordsToAnonimize)
             {
+                var word = wordWithType.Item1;
                 text = text.Replace(word, new String('*', word.Length));
             }
 
             return text;
         }
 
-        public bool DoesContainSensitiveInformation(string word)
+        public string GetSensitiveInformationType(string word)
         {
-            return IsPhoneNumber(word) || IsPesel(word) || IsDate(word) || IsName(word) || IsSurname(word);
+            if (IsPhoneNumber(word)) return "phone number";
+            if (IsPesel(word)) return "pesel";
+            if (IsDate(word)) return "date";
+            if (IsName(word)) return "name";
+            if (IsSurname(word)) return "surname";
+            return "";
         }
 
         private static bool IsPhoneNumber(string text)

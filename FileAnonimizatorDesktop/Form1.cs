@@ -15,7 +15,7 @@ namespace FileAnonimizatorDesktop
 {
     public partial class Form1 : Form
     {
-        private TextAnonimizator _anonimizator;
+        private TextAnonymizator _anonymizator;
         public Form1()
         {
             InitializeComponent();
@@ -27,7 +27,7 @@ namespace FileAnonimizatorDesktop
             string namesPath = Path.Combine(projectDirectory, "data", "names.csv");
             string surnamesPath = Path.Combine(projectDirectory, "data", "surnames.csv");
             var csvDataReader = new CsvDataReader(namesPath, surnamesPath);
-            _anonimizator = new TextAnonimizator(csvDataReader.GetNames(), csvDataReader.GetSurnames());
+            _anonymizator = new TextAnonymizator(csvDataReader.GetNames(), csvDataReader.GetSurnames());
         }
 
         private void panel1_Paint(object sender, PaintEventArgs e)
@@ -49,18 +49,18 @@ namespace FileAnonimizatorDesktop
         private void DragDropPanel_DragDrop(object sender, DragEventArgs e)
         {
             string[] files = (string[])e.Data.GetData(DataFormats.FileDrop, false);
-            foreach (var file in files)
+            foreach (string file in files)
             {
                 string text = WordFileExtractor.UploadAndExtractWordFile(file);
                 try
                 {
-                    var wordsToAnonimize = _anonimizator.GetWordsToAnonimize(text);
-                    foreach (string sensData in wordsToAnonimize)
+                    var wordsToAnonimize = _anonymizator.GetWordsToAnonimize(text);
+                    foreach ((string, string ) sensData in wordsToAnonimize)
                     {
-                        uploadedFile.Items.Add(sensData);
+                        uploadedFile.Items.Add(sensData.Item1 + " - " + sensData.Item2);
                     }
                     
-                    string processedText = _anonimizator.AnonimizeToStarsOfTheSameLength(text, wordsToAnonimize);
+                    string processedText = _anonymizator.AnonymizeToStarsOfTheSameLength(text, wordsToAnonimize);
                     Result.Text = processedText;
                 }
                 catch (Exception exception)

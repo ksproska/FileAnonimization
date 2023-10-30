@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using FileAnonimizatorDesktop;
 using NUnit.Framework;
 
@@ -9,20 +10,20 @@ namespace TestProject
     {
 
         [Test]
-        public void TestAnonimizeToStarsOfTheSameLength()
+        public void TestAnonymizeToStarsOfTheSameLength()
         {
             var original = "My name is Kamila and my phone number is 123456789";
-            var wordsToAnonimize = new[] { "Kamila", "123456789" };
+            var wordsToAnonymize = new[] { ("Kamila", "name"), ("123456789", "phone number") };
             var expected = "My name is ****** and my phone number is *********";
 
-            var actual = new TextAnonimizator(new List<string>(), new List<string>()).AnonimizeToStarsOfTheSameLength(original, wordsToAnonimize);
+            var actual = new TextAnonymizator(new List<string>(), new List<string>()).AnonymizeToStarsOfTheSameLength(original, wordsToAnonymize);
             Assert.AreEqual(expected, actual);
         }
 
         [Test]
         public void TestAnonimizationPositiveCases()
         {
-            var anonimizator = new TextAnonimizator(new List<string>(){"KAMILA", "OLA"}, new List<string>(){"SPROSKA"});
+            var anonimizator = new TextAnonymizator(new List<string>(){"KAMILA", "OLA"}, new List<string>(){"SPROSKA"});
             var positiveTestCases = new List<string>
             {
                 "Kamila",
@@ -41,15 +42,23 @@ namespace TestProject
 
             foreach (string testCase in positiveTestCases)
             {
-                string processedText = anonimizator.Anonimize(testCase);
+                string processedText = anonimizator.Anonymize(testCase);
                 Assert.AreNotEqual(testCase, processedText);
             }
         }
 
         [Test]
+        public void TestGetTypes()
+        {
+            var anonimizator = new TextAnonymizator(new List<string>(){"KAMILA", "OLA"}, new List<string>(){"SPROSKA"});
+            var inputText = "My name is Kamila and my phone number is 123456789";
+            Assert.AreEqual(new []{("Kamila", "name"), ("123456789", "phone number")}, anonimizator.GetWordsToAnonimize(inputText).ToList());
+        }
+
+        [Test]
         public void TestAnonimizationNegativeCases()
         {
-            var anonimizator = new TextAnonimizator(new List<string>(), new List<string>());
+            var anonimizator = new TextAnonymizator(new List<string>(), new List<string>());
             var negativeTestCases = new List<string>
             {
                 "Dzień",
@@ -58,7 +67,7 @@ namespace TestProject
 
             foreach (string testCase in negativeTestCases)
             {
-                string processedText = anonimizator.Anonimize(testCase);
+                string processedText = anonimizator.Anonymize(testCase);
                 Assert.AreEqual(testCase, processedText);
             }
         }
@@ -82,7 +91,7 @@ namespace TestProject
 
             foreach (string testCase in positiveTestCases)
             {
-                Assert.True(TextAnonimizator.IsPesel(testCase));
+                Assert.True(TextAnonymizator.IsPesel(testCase));
             }
         }
         [Test]
@@ -95,7 +104,7 @@ namespace TestProject
 
             foreach (string testCase in positiveTestCases)
             {
-                Assert.False(TextAnonimizator.IsPesel(testCase));
+                Assert.False(TextAnonymizator.IsPesel(testCase));
             }
         }
     }

@@ -1,4 +1,6 @@
-﻿namespace FileAnonimizatorDesktop
+﻿using System.Drawing;
+
+namespace FileAnonimizatorDesktop
 {
     partial class Form1
     {
