@@ -22,14 +22,19 @@ namespace FileAnonimizatorDesktop
 
         public string Anonimize(string text)
         {
-            var punctuation = text.Where(Char.IsPunctuation).Distinct().ToArray();
-            var words = text.Split().Select(x => x.Trim(punctuation));
-            var wordsToAnonimize = words.Where(x => DoesContainSensitiveInformation(x));
-            
+            var wordsToAnonimize = GetWordsToAnonimize(text);
             text = AnonimizeToStarsOfTheSameLength(text, wordsToAnonimize);
             return text;
         }
-        
+
+        public IEnumerable<string> GetWordsToAnonimize(string text)
+        {
+            var punctuation = text.Where(Char.IsPunctuation).Distinct().ToArray();
+            var words = text.Split().Select(x => x.Trim(punctuation));
+            var wordsToAnonimize = words.Where(x => DoesContainSensitiveInformation(x));
+            return wordsToAnonimize;
+        }
+
         public static string AnonimizeToStarsOfTheSameLength(string text, IEnumerable<string> wordsToAnonimize)
         {
             foreach (string word in wordsToAnonimize)

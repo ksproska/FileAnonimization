@@ -73,7 +73,7 @@
             this.SensistiveData.Name = "SensistiveData";
             this.SensistiveData.Size = new System.Drawing.Size(714, 23);
             this.SensistiveData.TabIndex = 2;
-            this.SensistiveData.Text = "Sensitive Data";
+            // this.SensistiveData.Text = "Sensitive Data";
             this.SensistiveData.Click += new System.EventHandler(this.label1_Click_1);
             // 
             // Form1

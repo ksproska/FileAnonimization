@@ -43,7 +43,6 @@ namespace FileAnonimizatorDesktop
         private void DragDropPanel_DragDrop(object sender, DragEventArgs e)
         {
             string[] files = (string[])e.Data.GetData(DataFormats.FileDrop, false);
-            //Console.WriteLine("\"Anonymized\": " + processedText);
             foreach (var file in files)
             {
                 string text = WordFileExtractor.UploadAndExtractWordFile(file);
@@ -51,26 +50,19 @@ namespace FileAnonimizatorDesktop
                 {
                     string workingDirectory = Environment.CurrentDirectory;
                     string projectDirectory = Directory.GetParent(workingDirectory).Parent.FullName;
-                    string namespath = Path.Combine(projectDirectory, "data", "names.csv");
-                    string surnamespath = Path.Combine(projectDirectory, "data", "surnames.csv");
-                    var csvDataReader = new CsvDataReader(namespath, surnamespath);
+                    string namesPath = Path.Combine(projectDirectory, "data", "names.csv");
+                    string surnamesPath = Path.Combine(projectDirectory, "data", "surnames.csv");
+                    var csvDataReader = new CsvDataReader(namesPath, surnamesPath);
                     
                     var anonimizator = new TextAnonimizator(csvDataReader.GetNames(), csvDataReader.GetSurnames());
                     string processedText = anonimizator.Anonimize(text);
-                    var punctuation = text.Where(Char.IsPunctuation).Distinct().ToArray();
-                    var words = text.Split().Select(x => x.Trim(punctuation));
-                    var sensitiveData = words.Where(x => anonimizator.DoesContainSensitiveInformation(x));
+                    var wordsToAnonimize = anonimizator.GetWordsToAnonimize(text);
                     
-                    StringBuilder wordsToAno = new StringBuilder();
-                    foreach (var sensData in sensitiveData)
+                    foreach (var sensData in wordsToAnonimize)
                     {
-                        wordsToAno.Append(sensData + ", ");
+                        uploadedFile.Items.Add(sensData);
                     }
                     Result.Text = processedText;
-                    Result.ForeColor = Color.DarkRed;
-                    SensistiveData.Text = wordsToAno.ToString();
-                    SensistiveData.ForeColor = Color.DarkRed;
-                    uploadedFile.Items.Add(wordsToAno);
                 }
                 catch (Exception exception)
                 {
