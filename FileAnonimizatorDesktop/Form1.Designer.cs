@@ -87,7 +87,7 @@ namespace FileAnonimizatorDesktop
             this.Controls.Add(this.Result);
             this.Controls.Add(this.DragDropPanel);
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "Sensitive data censor";
             this.DragDropPanel.ResumeLayout(false);
             this.ResumeLayout(false);
         }
