@@ -1,49 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.SymbolStore;
 using System.Linq;
 using System.Text.RegularExpressions;
-using DocumentFormat.OpenXml.Drawing.Charts;
-using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
-using DocumentFormat.OpenXml.Wordprocessing;
 
 namespace FileAnonimizatorDesktop
 {
-    public class TextAnonymizator
+    public class SensitiveDataFinder
     {
         private readonly List<String> _names;
         private readonly List<String> _surnames;
 
-        public TextAnonymizator(List<String> names, List<String> surnames)
+        public SensitiveDataFinder(List<String> names, List<String> surnames)
         {
             _names = names;
             _surnames = surnames;
         }
-
-        public string Anonymize(string text)
-        {
-            var wordsToAnonymize = GetWordsToAnonimize(text);
-            text = AnonymizeToStarsOfTheSameLength(text, wordsToAnonymize);
-            return text;
-        }
-
+        
         public IEnumerable<(string, string)> GetWordsToAnonimize(string text)
         {
             var punctuation = text.Where(Char.IsPunctuation).Distinct().ToArray();
             var words = text.Split().Select(x => x.Trim(punctuation));
             var wordsToAnonymize = words.Select(x => (x, GetSensitiveInformationType(x))).Where(x => x.Item2 != "");
             return wordsToAnonymize;
-        }
-
-        public string AnonymizeToStarsOfTheSameLength(string text, IEnumerable<(string, string)> wordsToAnonimize)
-        {
-            foreach ((string, string ) wordWithType in wordsToAnonimize)
-            {
-                var word = wordWithType.Item1;
-                text = text.Replace(word, new String('*', word.Length));
-            }
-
-            return text;
         }
 
         public string GetSensitiveInformationType(string word)

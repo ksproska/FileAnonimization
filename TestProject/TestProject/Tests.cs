@@ -8,22 +8,31 @@ namespace TestProject
     [TestFixture]
     public class Tests
     {
+        private static Dictionary<string, string> _dictionary = new Dictionary<string, string>()
+        {
+            {"name", "leave only first character"},
+            {"surname", "leave only first character"},
+            {"date", "stars"},
+            {"pesel", "stars"},
+            {"phone number", "stars"},
+        };
 
         [Test]
-        public void TestAnonymizeToStarsOfTheSameLength()
+        public void TestAnonymize()
         {
             var original = "My name is Kamila and my phone number is 123456789";
             var wordsToAnonymize = new[] { ("Kamila", "name"), ("123456789", "phone number") };
-            var expected = "My name is ****** and my phone number is *********";
+            var expected = "My name is K***** and my phone number is *********";
 
-            var actual = new TextAnonymizator(new List<string>(), new List<string>()).AnonymizeToStarsOfTheSameLength(original, wordsToAnonymize);
+            var actual = new SensitiveDataCensor().Anonymize(original, wordsToAnonymize, _dictionary);
             Assert.AreEqual(expected, actual);
         }
 
         [Test]
         public void TestAnonimizationPositiveCases()
         {
-            var anonimizator = new TextAnonymizator(new List<string>(){"KAMILA", "OLA"}, new List<string>(){"SPROSKA"});
+            var anonimizator = new SensitiveDataFinder(new List<string>(){"KAMILA", "OLA"}, new List<string>(){"SPROSKA"});
+            var censor = new SensitiveDataCensor();
             var positiveTestCases = new List<string>
             {
                 "Kamila",
@@ -42,7 +51,8 @@ namespace TestProject
 
             foreach (string testCase in positiveTestCases)
             {
-                string processedText = anonimizator.Anonymize(testCase);
+                var wordsToAnonymize = anonimizator.GetWordsToAnonimize(testCase);
+                string processedText = censor.Anonymize(testCase, wordsToAnonymize, _dictionary);
                 Assert.AreNotEqual(testCase, processedText);
             }
         }
@@ -50,7 +60,7 @@ namespace TestProject
         [Test]
         public void TestGetTypes()
         {
-            var anonimizator = new TextAnonymizator(new List<string>(){"KAMILA", "OLA"}, new List<string>(){"SPROSKA"});
+            var anonimizator = new SensitiveDataFinder(new List<string>(){"KAMILA", "OLA"}, new List<string>(){"SPROSKA"});
             var inputText = "My name is Kamila and my phone number is 123456789";
             Assert.AreEqual(new []{("Kamila", "name"), ("123456789", "phone number")}, anonimizator.GetWordsToAnonimize(inputText).ToList());
         }
@@ -58,7 +68,8 @@ namespace TestProject
         [Test]
         public void TestAnonimizationNegativeCases()
         {
-            var anonimizator = new TextAnonymizator(new List<string>(), new List<string>());
+            var anonimizator = new SensitiveDataFinder(new List<string>(), new List<string>());
+            var censor = new SensitiveDataCensor();
             var negativeTestCases = new List<string>
             {
                 "Dzień",
@@ -67,7 +78,8 @@ namespace TestProject
 
             foreach (string testCase in negativeTestCases)
             {
-                string processedText = anonimizator.Anonymize(testCase);
+                var wordsToAnonymize = anonimizator.GetWordsToAnonimize(testCase);
+                string processedText = censor.Anonymize(testCase, wordsToAnonymize, _dictionary);
                 Assert.AreEqual(testCase, processedText);
             }
         }
@@ -91,7 +103,7 @@ namespace TestProject
 
             foreach (string testCase in positiveTestCases)
             {
-                Assert.True(TextAnonymizator.IsPesel(testCase));
+                Assert.True(SensitiveDataFinder.IsPesel(testCase));
             }
         }
         [Test]
@@ -104,7 +116,7 @@ namespace TestProject
 
             foreach (string testCase in positiveTestCases)
             {
-                Assert.False(TextAnonymizator.IsPesel(testCase));
+                Assert.False(SensitiveDataFinder.IsPesel(testCase));
             }
         }
     }

@@ -15,7 +15,9 @@ namespace FileAnonimizatorDesktop
 {
     public partial class Form1 : Form
     {
-        private TextAnonymizator _anonymizator;
+        private SensitiveDataFinder _sensitiveDataFinder;
+        private SensitiveDataCensor _sensitiveDataCensor;
+        private Dictionary<string, string> _dictionary;
         public Form1()
         {
             InitializeComponent();
@@ -27,7 +29,16 @@ namespace FileAnonimizatorDesktop
             string namesPath = Path.Combine(projectDirectory, "data", "names.csv");
             string surnamesPath = Path.Combine(projectDirectory, "data", "surnames.csv");
             var csvDataReader = new CsvDataReader(namesPath, surnamesPath);
-            _anonymizator = new TextAnonymizator(csvDataReader.GetNames(), csvDataReader.GetSurnames());
+            _sensitiveDataFinder = new SensitiveDataFinder(csvDataReader.GetNames(), csvDataReader.GetSurnames());
+            _sensitiveDataCensor = new SensitiveDataCensor();
+            _dictionary = new Dictionary<string, string>()
+            {
+                {"name", "leave only first character"},
+                {"surname", "leave only first character"},
+                {"phone number", "censor last 6 digits"},
+                {"pesel", "censor last 7 digits"},
+                {"date", "leave only a year"},
+            };
         }
 
         private void panel1_Paint(object sender, PaintEventArgs e)
@@ -54,13 +65,13 @@ namespace FileAnonimizatorDesktop
                 string text = WordFileExtractor.UploadAndExtractWordFile(file);
                 try
                 {
-                    var wordsToAnonimize = _anonymizator.GetWordsToAnonimize(text);
+                    var wordsToAnonimize = _sensitiveDataFinder.GetWordsToAnonimize(text);
                     foreach ((string, string ) sensData in wordsToAnonimize)
                     {
-                        uploadedFile.Items.Add(sensData.Item1 + " - " + sensData.Item2);
+                        uploadedFile.Items.Add(sensData.Item1 + " - " + sensData.Item2 + " - " + _dictionary[sensData.Item2]);
                     }
                     
-                    string processedText = _anonymizator.AnonymizeToStarsOfTheSameLength(text, wordsToAnonimize);
+                    string processedText = _sensitiveDataCensor.Anonymize(text, wordsToAnonimize, _dictionary);
                     Result.Text = processedText;
                 }
                 catch (Exception exception)

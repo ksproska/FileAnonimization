@@ -66,7 +66,7 @@ namespace FileAnonimizatorDesktop
             this.Result.Name = "Result";
             this.Result.Size = new System.Drawing.Size(714, 43);
             this.Result.TabIndex = 1;
-            this.Result.Text = "Result";
+            this.Result.Text = "Przeciągnij plik by zanonimizować dane.";
             this.Result.Click += new System.EventHandler(this.label1_Click);
             // 
             // SensistiveData
