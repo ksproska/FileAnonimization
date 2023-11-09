@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "lvwUH2LDB/OWqC+K8bX4RBV8iRG1vX2nXdkklLrfQSHGHIxdt+uvwKWQjH2PuoPTYnL3Qw/nydGYtXf9DJRfaw==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\marta\\OneDrive\\Pulpit\\uwu\\Magisterka\\IPOD\\FileAnonimizationWpfVS\\FileAnonimizationWpfVS.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\marta\\.nuget\\packages\\documentformat.openxml\\2.20.0\\documentformat.openxml.2.20.0.nupkg.sha512",
+    "C:\\Users\\marta\\.nuget\\packages\\system.io.packaging\\4.7.0\\system.io.packaging.4.7.0.nupkg.sha512"
+  ],
+  "logs": []
+}
