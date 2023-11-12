@@ -23,6 +23,7 @@ namespace FileAnonimizationWpfVS
     /// </summary>
     public partial class MainWindow : Window
     {
+        private ContextNameAndSurnameFinder _contextNameAndSurnameFinder;
         private SensitiveDataFinder _sensitiveDataFinder;
         private SensitiveDataCensor _sensitiveDataCensor;
         private Dictionary<string, string> _dictionary;
@@ -35,12 +36,16 @@ namespace FileAnonimizationWpfVS
         public MainWindow()
         {
             InitializeComponent();
+
+            _contextNameAndSurnameFinder = new ContextNameAndSurnameFinder(
+                new []{ "jest", "był", "była", "ma", "miał", "miała"}
+                );
             string workingDirectory = Environment.CurrentDirectory;
             string projectDirectory = Directory.GetParent(workingDirectory).Parent.Parent.FullName;
             string namesPath = System.IO.Path.Combine(projectDirectory, "data", "names.csv");
             string surnamesPath = System.IO.Path.Combine(projectDirectory, "data", "surnames.csv");
             var csvDataReader = new CsvDataReader(namesPath, surnamesPath);
-            _sensitiveDataFinder = new SensitiveDataFinder(csvDataReader.GetNames(), csvDataReader.GetSurnames());
+            _sensitiveDataFinder = new SensitiveDataFinder(csvDataReader.GetNames(), csvDataReader.GetSurnames(), _contextNameAndSurnameFinder);
             _sensitiveDataCensor = new SensitiveDataCensor();
             _dictionary = new Dictionary<string, string>()
             {
@@ -49,6 +54,7 @@ namespace FileAnonimizationWpfVS
                 {"phone number", "censor last 6 digits"},
                 {"pesel", "censor last 7 digits"},
                 {"date", "leave only a year"},
+                {"suspected name or surname", "leave only first character"},
             };
             selectedElement = new ObservableCollection<string>();
         }
