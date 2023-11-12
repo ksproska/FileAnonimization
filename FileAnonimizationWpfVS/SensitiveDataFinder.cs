@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Printing;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -43,12 +44,19 @@ namespace FileAnonimizationWpfVS
         }
 
         public static bool IsPesel(string text)
-        {
-            if (!Regex.IsMatch(text, @"^[0-9]{11}$"))
+        {   
+            if (!Regex.IsMatch(text, @"^[0-9OI]{11}$"))
             {
                 return false;
             }
-            return HasPeselCorrectChecksum(text);
+            if (!Regex.IsMatch(text, @"^[0-9]{11}$"))
+            {
+                Console.WriteLine(text);
+                text = text.Replace("O", "0");
+                text = text.Replace("I", "1");
+                Console.WriteLine(text);
+            }
+            return HasPeselCorrectChecksum(text) && HasPeselDate(text);
         }
 
         private static bool HasPeselCorrectChecksum(string text)
@@ -62,9 +70,58 @@ namespace FileAnonimizationWpfVS
                 sum += digitOfMultiplication;
             }
             int controlNumb = text[text.Length - 1] - '0';
+            
             int digitOfSum = (sum % 10);
             return (10 - digitOfSum) == controlNumb;
         }
+
+        private static bool HasPeselDate(string text)
+        {
+            int currentYear = int.Parse(DateTime.Now.Year.ToString());
+            int currentMonth = int.Parse(DateTime.Now.Month.ToString());
+            int currentDay = int.Parse(DateTime.Now.Day.ToString());
+            string pesel_year = text.Substring(0, 2);
+            int month = int.Parse(text.Substring(2, 2));
+            int day = int.Parse(text.Substring(4, 2));
+            int year = 0;
+            //Check if year is above 2000, if it's less than current year and normalize month and year
+            if (21 <= month && month <= 32)
+            {
+                year += int.Parse("20" + pesel_year);
+                month -= 20;
+                if (year >= currentYear)
+                {
+                    return false;
+                }
+
+                if (year == currentYear && month >= currentMonth)
+                {
+                    return false;
+                }
+
+                if (year == currentYear && month == currentMonth && day >= currentDay)
+                {
+                    return false;
+                }
+            }
+            else if (month >= 1 && month <= 12)
+            {
+                year += int.Parse("19" + pesel_year);
+            }
+            else
+            {
+                return false;
+            }
+            
+            //Check if day is between 1 and num of Days in the month in the specific year
+            if (day < 1 || day > DateTime.DaysInMonth(year, month))
+            {
+                return false;
+            }
+
+            return true;
+        }
+        
 
         private static bool IsDate(string text)
         {

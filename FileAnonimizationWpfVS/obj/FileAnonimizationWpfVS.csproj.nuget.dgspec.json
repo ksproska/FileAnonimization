@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/home/kamilasproska/RiderProjects/FileAnonimization/FileAnonimization/FileAnonimizationWpfVS/FileAnonimizationWpfVS.csproj": {}
+    "C:\\Users\\jpuci\\RiderProjects\\FileAnonimization4\\FileAnonimizationWpfVS\\FileAnonimizationWpfVS.csproj": {}
   },
   "projects": {
-    "/home/kamilasproska/RiderProjects/FileAnonimization/FileAnonimization/FileAnonimizationWpfVS/FileAnonimizationWpfVS.csproj": {
+    "C:\\Users\\jpuci\\RiderProjects\\FileAnonimization4\\FileAnonimizationWpfVS\\FileAnonimizationWpfVS.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/kamilasproska/RiderProjects/FileAnonimization/FileAnonimization/FileAnonimizationWpfVS/FileAnonimizationWpfVS.csproj",
+        "projectUniqueName": "C:\\Users\\jpuci\\RiderProjects\\FileAnonimization4\\FileAnonimizationWpfVS\\FileAnonimizationWpfVS.csproj",
         "projectName": "FileAnonimizationWpfVS",
-        "projectPath": "/home/kamilasproska/RiderProjects/FileAnonimization/FileAnonimization/FileAnonimizationWpfVS/FileAnonimizationWpfVS.csproj",
-        "packagesPath": "/home/kamilasproska/.nuget/packages/",
-        "outputPath": "/home/kamilasproska/RiderProjects/FileAnonimization/FileAnonimization/FileAnonimizationWpfVS/obj/",
+        "projectPath": "C:\\Users\\jpuci\\RiderProjects\\FileAnonimization4\\FileAnonimizationWpfVS\\FileAnonimizationWpfVS.csproj",
+        "packagesPath": "C:\\Users\\jpuci\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\jpuci\\RiderProjects\\FileAnonimization4\\FileAnonimizationWpfVS\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/kamilasproska/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\jpuci\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net6.0-windows"
@@ -56,8 +56,20 @@
           "warn": true,
           "downloadDependencies": [
             {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[6.0.23, 6.0.23]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Host.win-x64",
+              "version": "[6.0.23, 6.0.23]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[6.0.23, 6.0.23]"
+            },
+            {
               "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[6.0.24, 6.0.24]"
+              "version": "[6.0.23, 6.0.23]"
             }
           ],
           "frameworkReferences": {
@@ -68,7 +80,7 @@
               "privateAssets": "none"
             }
           },
-          "runtimeIdentifierGraphPath": "/home/kamilasproska/.dotnet/sdk/6.0.416/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.402\\RuntimeIdentifierGraph.json"
         }
       }
     }
