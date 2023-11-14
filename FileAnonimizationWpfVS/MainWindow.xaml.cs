@@ -1,20 +1,17 @@
-﻿using System;
-using System.Collections;
+﻿using DocumentFormat.OpenXml.Office2016.Presentation.Command;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
+using exporttoword = Microsoft.Office.Interop.Word;
 
 namespace FileAnonimizationWpfVS
 {
@@ -31,6 +28,7 @@ namespace FileAnonimizationWpfVS
         private TextPointer selectionEnd;
         public string processedText = "";
         ObservableCollection<string> selectedElement;
+        ObservableCollection<string> unselectedElement;
         string text = "";
         public MainWindow()
         {
@@ -49,8 +47,10 @@ namespace FileAnonimizationWpfVS
                 {"phone number", "censor last 6 digits"},
                 {"pesel", "censor last 7 digits"},
                 {"date", "leave only a year"},
+                {"user selection", "stars"}
             };
             selectedElement = new ObservableCollection<string>();
+            unselectedElement = new ObservableCollection<string>();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -168,71 +168,7 @@ namespace FileAnonimizationWpfVS
             }
         }
 
-        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
-        }
-
-        private void richTB_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            
-        }
-
-        private void RichTextBox_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            //isMousePressed = true;
-            Point mouseClickPointDown = e.GetPosition(richTextBox);
-         
-            selectionStart = richTextBox.GetPositionFromPoint(mouseClickPointDown, true);
-        }
-        private void RichTextBox_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            Point mouseClickPointUp = e.GetPosition(richTextBox);
-            selectionEnd = richTextBox.GetPositionFromPoint(mouseClickPointUp, true);
-            if (selectionStart != null && selectionEnd != null)
-            {
-                TextPointer start = selectionStart.GetInsertionPosition(LogicalDirection.Forward);
-                TextPointer end = selectionEnd.GetInsertionPosition(LogicalDirection.Backward);
-                
-                if (start != null && end != null)
-                {
-                    richTextBox.Selection.Select(start, end);
-                    TextRange selectedWordRange = new TextRange(start, end);
-                    string selectedWord = selectedWordRange.Text;
-
-                    MessageBox.Show("Selected word: " + selectedWord);
-                }
-            }
-        }
-
-        private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
-        }
-
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void Button_Click_2(object sender, RoutedEventArgs e)
-        {
-            
-            if (ListBefore.SelectedItem != null)
-            {
-                
-                selectedElement.Add(ListBefore.SelectedItem as string);
-                //((ObservableCollection<string>)ListBefore.ItemsSource).Remove(selectedElement[0] as string);
-            }
-            ListAfter.ItemsSource = selectedElement;
-            //ListAfter.Items.Add(selectedElement);
-        }
-
-        private void ListBox_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
-        {
-
-        }
-
+        //OK button
         private void BtnOk_Click(object sender, RoutedEventArgs e)
         {
             if (ListAfter.Items != null)
@@ -241,12 +177,12 @@ namespace FileAnonimizationWpfVS
 
                 for (int i = 0; i < ListAfter.Items.Count; i++)
                 {
-                    if(ListAfter.Items.GetItemAt(i) != null)
+                    if (ListAfter.Items.GetItemAt(i) != null)
                     {
-                        var t = new Tuple<string, string>(ListAfter.Items.GetItemAt(i).ToString(), _sensitiveDataFinder.GetSensitiveInformationType(ListAfter.Items.GetItemAt(i).ToString()));
+                        var t = new Tuple<string, string>(ListAfter.Items.GetItemAt(i).ToString(), _sensitiveDataFinder.GetSensitiveInformationTypeForSelectedWords(ListAfter.Items.GetItemAt(i).ToString()));
                         w.Add(t);
                     }
-                    
+
                 }
 
                 processedText = _sensitiveDataCensor.Anonymize(text, w.Select(x => (x.Item1, x.Item2)), _dictionary);
@@ -257,6 +193,67 @@ namespace FileAnonimizationWpfVS
                 MessageBox.Show("Select items");
             }
             TextBox2.Text = processedText;
+        }
+
+        //plus button
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+
+            if (ListBefore.SelectedItem != null)
+            {
+                ListAfter.Items.Add(ListBefore.SelectedItem as string);
+                ListBefore.UnselectAll();
+            }
+            else if (richTextBox.Selection != null && richTextBox.Selection.Text != "")
+            {
+                ListAfter.Items.Add(richTextBox.Selection.Text);
+                ListBefore.UnselectAll();
+            }
+            else if (ListBefore.SelectedItem == null || ListBefore.SelectedItem == "" || richTextBox.Selection == null || richTextBox.Selection.Text != "")
+            {
+                MessageBox.Show("Select item");
+            }
+        }
+
+        //minus button
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            if (ListAfter.SelectedItem != null)
+            {
+                ListAfter.Items.Remove(ListAfter.SelectedItem as string);
+                ListAfter.UnselectAll();
+            }
+            else
+            {
+                MessageBox.Show("Select item");
+            }
+        }
+
+        private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+
+
+        private void ListBox_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+        }
+
+        private void ExportBtn_Click(object sender, RoutedEventArgs e)
+        {
+            exporttoword.Application wordapp = new exporttoword.Application();
+            wordapp.Visible = true;
+            exporttoword.Document worddoc;
+            object wordobj = System.Reflection.Missing.Value;
+            worddoc = wordapp.Documents.Add(ref wordobj);
+            wordapp.Selection.TypeText(TextBox2.Text);
+            wordapp = null;
         }
     }
 }
