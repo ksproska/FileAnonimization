@@ -157,7 +157,7 @@ namespace FileAnonimizationWpfVS
                        
                         Paragraph paragraph = new Paragraph();
                         IEnumerable<string> words = wordsToAnonimize.Select(g => g.Item1);
-                        Paragraph finalParagraph = TextFormatter.FormatText(paragraph, text, words.ToList());
+                        Paragraph finalParagraph = TextFormatter.FormatText(paragraph, text, words.Distinct().ToList());
                         flowDoc.Blocks.Add(finalParagraph);
 
                         string t = new TextRange(finalParagraph.ContentStart, paragraph.ContentEnd).Text;
@@ -167,6 +167,11 @@ namespace FileAnonimizationWpfVS
                     catch (Exception exception)
                     {
                         Console.WriteLine(exception);
+                        FlowDocument flowDoc = new FlowDocument();
+                        richTextBox.Document = flowDoc;
+                        Paragraph paragraph = new Paragraph();
+                        paragraph.Inlines.Add(exception.ToString());
+                        flowDoc.Blocks.Add(paragraph);
                     }
                     
                 }
@@ -255,7 +260,7 @@ namespace FileAnonimizationWpfVS
                     
                 }
 
-                processedText = _sensitiveDataCensor.Anonymize(text, w.Select(x => (x.Item1, x.Item2)), _dictionary);
+                processedText = _sensitiveDataCensor.Anonymize(text, w.Select(x => (x.Item1, x.Item2)).ToArray(), _dictionary);
                 TextBox2.Text = processedText;
             }
             else
