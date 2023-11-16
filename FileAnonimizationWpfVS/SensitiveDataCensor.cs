@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace FileAnonimizationWpfVS
 {
     internal class SensitiveDataCensor
     {
-        public string Anonymize(string text, IEnumerable<(string, string)> sensitiveData, Dictionary<string, string> rulebook)
+        public string Anonymize(string text, (string, string)[] sensitiveData, Dictionary<string, string> rulebook)
         {
             foreach ((string, string) wordWithType in sensitiveData)
             {

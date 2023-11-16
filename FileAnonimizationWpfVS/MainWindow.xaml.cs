@@ -23,6 +23,7 @@ namespace FileAnonimizationWpfVS
     /// </summary>
     public partial class MainWindow : Window
     {
+        private ContextNameAndSurnameFinder _contextNameAndSurnameFinder;
         private SensitiveDataFinder _sensitiveDataFinder;
         private SensitiveDataCensor _sensitiveDataCensor;
         private Dictionary<string, string> _dictionary;
@@ -35,12 +36,16 @@ namespace FileAnonimizationWpfVS
         public MainWindow()
         {
             InitializeComponent();
+
+            _contextNameAndSurnameFinder = new ContextNameAndSurnameFinder(
+                new []{ "jest", "był", "była", "ma", "miał", "miała"}
+                );
             string workingDirectory = Environment.CurrentDirectory;
             string projectDirectory = Directory.GetParent(workingDirectory).Parent.Parent.FullName;
             string namesPath = System.IO.Path.Combine(projectDirectory, "data", "names.csv");
             string surnamesPath = System.IO.Path.Combine(projectDirectory, "data", "surnames.csv");
             var csvDataReader = new CsvDataReader(namesPath, surnamesPath);
-            _sensitiveDataFinder = new SensitiveDataFinder(csvDataReader.GetNames(), csvDataReader.GetSurnames());
+            _sensitiveDataFinder = new SensitiveDataFinder(csvDataReader.GetNames(), csvDataReader.GetSurnames(), _contextNameAndSurnameFinder);
             _sensitiveDataCensor = new SensitiveDataCensor();
             _dictionary = new Dictionary<string, string>()
             {
@@ -49,6 +54,7 @@ namespace FileAnonimizationWpfVS
                 {"phone number", "censor last 6 digits"},
                 {"pesel", "censor last 7 digits"},
                 {"date", "leave only a year"},
+                {"suspected name or surname", "leave only first character"},
             };
             selectedElement = new ObservableCollection<string>();
         }
@@ -151,7 +157,12 @@ namespace FileAnonimizationWpfVS
                        
                         Paragraph paragraph = new Paragraph();
                         IEnumerable<string> words = wordsToAnonimize.Select(g => g.Item1);
-                        Paragraph finalParagraph = TextFormatter.FormatText(paragraph, text, words.ToList());
+                        //var allWords = 
+                        var punctuation = text.Where(Char.IsPunctuation).Distinct().ToArray();
+                        var wordsAll = text.Split().Select(x => x.Trim(punctuation));
+                        var onlyWordsToAnonimize = wordsAll.Where(x => words.Contains(x));
+
+                        Paragraph finalParagraph = TextFormatter.FormatText(paragraph, text, onlyWordsToAnonimize.ToList());
                         flowDoc.Blocks.Add(finalParagraph);
 
                         string t = new TextRange(finalParagraph.ContentStart, paragraph.ContentEnd).Text;
@@ -161,6 +172,11 @@ namespace FileAnonimizationWpfVS
                     catch (Exception exception)
                     {
                         Console.WriteLine(exception);
+                        FlowDocument flowDoc = new FlowDocument();
+                        richTextBox.Document = flowDoc;
+                        Paragraph paragraph = new Paragraph();
+                        paragraph.Inlines.Add(exception.ToString());
+                        flowDoc.Blocks.Add(paragraph);
                     }
                     
                 }
@@ -249,7 +265,7 @@ namespace FileAnonimizationWpfVS
                     
                 }
 
-                processedText = _sensitiveDataCensor.Anonymize(text, w.Select(x => (x.Item1, x.Item2)), _dictionary);
+                processedText = _sensitiveDataCensor.Anonymize(text, w.Select(x => (x.Item1, x.Item2)).ToArray(), _dictionary);
                 TextBox2.Text = processedText;
             }
             else

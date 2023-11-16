@@ -12,19 +12,21 @@ namespace FileAnonimizationWpfVS
     {
         private readonly List<String> _names;
         private readonly List<String> _surnames;
+        private readonly ContextNameAndSurnameFinder _contextNameAndSurnameFinder;
 
-        public SensitiveDataFinder(List<String> names, List<String> surnames)
+        public SensitiveDataFinder(List<String> names, List<String> surnames, ContextNameAndSurnameFinder contextNameAndSurnameFinder)
         {
             _names = names;
             _surnames = surnames;
+            _contextNameAndSurnameFinder = contextNameAndSurnameFinder;
         }
 
-        public IEnumerable<(string, string)> GetWordsToAnonimize(string text)
+        public (string, string)[] GetWordsToAnonimize(string text)
         {
             var punctuation = text.Where(Char.IsPunctuation).Distinct().ToArray();
             var words = text.Split().Select(x => x.Trim(punctuation));
             var wordsToAnonymize = words.Select(x => (x, GetSensitiveInformationType(x))).Where(x => x.Item2 != "");
-            return wordsToAnonymize;
+            return wordsToAnonymize.Concat(_contextNameAndSurnameFinder.GetNamesAndSurnamesIfContext(text)).ToArray();
         }
 
         public string GetSensitiveInformationType(string word)
