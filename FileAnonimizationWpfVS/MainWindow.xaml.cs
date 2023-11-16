@@ -33,6 +33,7 @@ namespace FileAnonimizationWpfVS
         public string processedText = "";
         ObservableCollection<string> selectedElement;
         string text = "";
+        private static (string, string)[] wordsToAnonimize;
         public MainWindow()
         {
             InitializeComponent();
@@ -145,7 +146,7 @@ namespace FileAnonimizationWpfVS
                     try
                     {
                     
-                        var wordsToAnonimize = _sensitiveDataFinder.GetWordsToAnonimize(text);
+                        wordsToAnonimize = _sensitiveDataFinder.GetWordsToAnonimize(text);
                         /*foreach ((string, string) sensData in wordsToAnonimize)
                         {
                             uploadedFile.Items.Add(sensData.Item1 + " - " + sensData.Item2 + " - " + _dictionary[sensData.Item2]);
@@ -156,8 +157,8 @@ namespace FileAnonimizationWpfVS
                         richTextBox.Document = flowDoc;
                        
                         Paragraph paragraph = new Paragraph();
-                        IEnumerable<string> words = wordsToAnonimize.Select(g => g.Item1);
-                        //var allWords = 
+                        var words = wordsToAnonimize.Select(g => g.Item1);
+                        
                         var punctuation = text.Where(Char.IsPunctuation).Distinct().ToArray();
                         var wordsAll = text.Split().Select(x => x.Trim(punctuation));
                         var onlyWordsToAnonimize = wordsAll.Where(x => words.Contains(x));
@@ -259,8 +260,14 @@ namespace FileAnonimizationWpfVS
                 {
                     if(ListAfter.Items.GetItemAt(i) != null)
                     {
-                        var t = new Tuple<string, string>(ListAfter.Items.GetItemAt(i).ToString(), _sensitiveDataFinder.GetSensitiveInformationType(ListAfter.Items.GetItemAt(i).ToString()));
-                        w.Add(t);
+                        var t = wordsToAnonimize
+                            .Where(x => x.Item1.Contains(ListAfter.Items.GetItemAt(i).ToString()))
+                            .FirstOrDefault((null, null));
+                        if ((null, null) != t)
+                        {
+                            w.Add(new Tuple<string, string>(t.Item1, t.Item2));
+                        }
+                        
                     }
                     
                 }
