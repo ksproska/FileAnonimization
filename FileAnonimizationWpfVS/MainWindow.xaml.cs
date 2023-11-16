@@ -157,7 +157,12 @@ namespace FileAnonimizationWpfVS
                        
                         Paragraph paragraph = new Paragraph();
                         IEnumerable<string> words = wordsToAnonimize.Select(g => g.Item1);
-                        Paragraph finalParagraph = TextFormatter.FormatText(paragraph, text, words.Distinct().ToList());
+                        //var allWords = 
+                        var punctuation = text.Where(Char.IsPunctuation).Distinct().ToArray();
+                        var wordsAll = text.Split().Select(x => x.Trim(punctuation));
+                        var onlyWordsToAnonimize = wordsAll.Where(x => words.Contains(x));
+
+                        Paragraph finalParagraph = TextFormatter.FormatText(paragraph, text, onlyWordsToAnonimize.ToList());
                         flowDoc.Blocks.Add(finalParagraph);
 
                         string t = new TextRange(finalParagraph.ContentStart, paragraph.ContentEnd).Text;
