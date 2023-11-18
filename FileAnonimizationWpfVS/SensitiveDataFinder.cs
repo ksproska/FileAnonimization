@@ -128,13 +128,56 @@ namespace FileAnonimizationWpfVS
         private static bool IsDate(string text)
         {
             var pattern = @"^"
-                          + @"(\d{1,2})\.(\d{1,2})\.(\d{4})"
-                          + @"|(\d{1,2})\-(\d{1,2})\-(\d{4})"
-                          + @"|(\d{4})\-(\d{1,2})\-(\d{1,2})"
-                          + @"|(\d{4})\/(\d{1,2})\/(\d{1,2})"
-                          + @"|(\d{1,2})\/(\d{1,2})\/(\d{4})"
+                          + @"(\d{1,2})\.(\d{1,2})\.(\d{4})" //DD.MM.YYYY 
+                          + @"|(\d{1,2})\-(\d{1,2})\-(\d{4})" //DD-MM-YYYY
+                          + @"|(\d{4})\-(\d{1,2})\-(\d{1,2})" //YYYY-MM-DD
+                          + @"|(\d{4})\/(\d{1,2})\/(\d{1,2})" //YYYY/MM/DD
+                          + @"|(\d{1,2})\/(\d{1,2})\/(\d{4})" //DD/MM/YYYY
                           + @"$";
-            return Regex.IsMatch(text, pattern);
+            var pattern1 = @"^"
+                           + @"([IO\d]{1,2})[\/\.\-]([IO\d]{1,2})[\/\.\-]([IO\d]{4})"
+                           + @"$";
+            
+            var pattern2 = @"^"
+                           + @"([IO\d]{4})[\/\.\-]([IO\d]{1,2})[\/\.\-]([IO\d]{1,2})"
+                           + @"$";
+            char[] separators = { '/', '.', '-' };
+            int day = 0;
+            int month = 0;
+            int year = 0;
+            if (Regex.IsMatch(text, pattern1))
+            {
+                string onlyNums = text.Replace("O", "0");
+                onlyNums = onlyNums.Replace("I", "1");
+                string[] list = onlyNums.Split(separators);
+                day = int.Parse(list[0]);
+                month = int.Parse(list[1]);
+                year = int.Parse(list[2]);
+                
+            } else if (Regex.IsMatch(text, pattern2))
+            {
+                string onlyNums = text.Replace("O", "0");
+                onlyNums = onlyNums.Replace("I", "1");
+                string[] list = onlyNums.Split(separators);
+                year = int.Parse(list[0]);
+                month = int.Parse(list[1]);
+                day = int.Parse(list[2]);
+            }
+            else
+            {
+                return false;
+            }
+
+            if (month > 12 || month < 1)
+            {
+                return false;
+            }
+
+            if ((day < 1 || day > DateTime.DaysInMonth(year, month)))
+            {
+                return false;
+            }
+            return true;
         }
 
         private bool IsName(string text)
