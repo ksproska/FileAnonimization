@@ -202,7 +202,7 @@ namespace FileAnonimizationWpfVS
 
                 }
 
-                processedText = _sensitiveDataCensor.Anonymize(text, w.Select(x => (x.Item1, x.Item2)), _dictionary);
+                processedText = _sensitiveDataCensor.Anonymize(text, w.Select(x => (x.Item1, x.Item2)).ToArray(), _dictionary);
                 TextBox2.Text = processedText;
             }
             else
