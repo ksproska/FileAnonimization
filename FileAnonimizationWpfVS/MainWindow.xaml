@@ -7,20 +7,20 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <RichTextBox Name="richTextBox" Margin="50,122,447,27" TextChanged="richTB_TextChanged" MouseDown="RichTextBox_MouseDown" MouseUp="RichTextBox_MouseUp"/>
+        <RichTextBox Name="richTextBox" Margin="50,122,447,27"/>
         <Rectangle Fill="BlueViolet"
                  MouseMove="ellipse_MouseMove"
                  AllowDrop="True"
                  DragEnter="ellipse_DragEnter" DragLeave="ellipse_DragLeave"
                  DragOver="ellipse_DragOver" Drop="ellipse_Drop" Margin="50,10,447,340" />
-        <TextBox x:Name="TextBox2" Margin="421,286,62,0" TextWrapping="Wrap" Text="Anonymized text will appear here..." 
-                 VerticalAlignment="Top" TextChanged="TextBox_TextChanged" Height="121"/>
+        <TextBox x:Name="TextBox2" Margin="424,250,58,63" TextWrapping="Wrap" Text="Anonymized text will appear here..." TextChanged="TextBox_TextChanged"/>
         <Label x:Name ="Label1" Content="Drop file here..." HorizontalAlignment="Left" Margin="156,34,0,0" VerticalAlignment="Top"/>
         <ListBox x:Name="ListBefore"  d:ItemsSource="{d:SampleData ItemCount=5}" Margin="400,77,256,221" SelectionChanged="ListBox_SelectionChanged"/>
         <Button x:Name ="BtnRemove" Content="-" HorizontalAlignment="Left" Margin="566,106,0,0" VerticalAlignment="Top" Click="Button_Click_1" Height="22" Width="20"/>
         <Button x:Name ="BtnAdd" Content="+" HorizontalAlignment="Left" Margin="566,138,0,0" VerticalAlignment="Top" Click="Button_Click_2" Height="22" Width="20"/>
         <ListBox x:Name="ListAfter" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="617,77,41,221" SelectionChanged="ListBox_SelectionChanged_1"/>
-        <Button x:Name ="BtnOk" Content="OK" HorizontalAlignment="Left" Margin="560,237,0,0" VerticalAlignment="Top" Height="28" Width="40" Click="BtnOk_Click"/>
+        <Button x:Name ="BtnOk" Content="OK" HorizontalAlignment="Left" Margin="563,217,0,0" VerticalAlignment="Top" Height="28" Width="40" Click="BtnOk_Click"/>
+        <Button x:Name ="ExportBtn" Content="Export" HorizontalAlignment="Left" Margin="563,387,0,0" VerticalAlignment="Top" Click="ExportBtn_Click"/>
 
     </Grid>
 </Window>

@@ -39,6 +39,16 @@ namespace FileAnonimizationWpfVS
             return "";
         }
 
+        public string GetSensitiveInformationTypeForSelectedWords(string word)
+        {
+            if (IsPhoneNumber(word)) return "phone number";
+            if (IsPesel(word)) return "pesel";
+            if (IsDate(word)) return "date";
+            if (IsName(word)) return "name";
+            if (IsSurname(word)) return "surname";
+            return "user selection";
+        }
+
         private static bool IsPhoneNumber(string text)
         {
             string pattern = @"^(\+[0-9]{11}|[0-9]{9}|[0-9]{3}-[0-9]{3}-[0-9]{3})$";
