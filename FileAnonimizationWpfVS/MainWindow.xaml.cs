@@ -24,6 +24,7 @@ namespace FileAnonimizationWpfVS
     public partial class MainWindow : Window
     {
         private ContextNameAndSurnameFinder _contextNameAndSurnameFinder;
+        private ContextIlnessFinder _contextIlnessFinder;
         private SensitiveDataFinder _sensitiveDataFinder;
         private SensitiveDataCensor _sensitiveDataCensor;
         private Dictionary<string, string> _dictionary;
@@ -41,12 +42,14 @@ namespace FileAnonimizationWpfVS
             _contextNameAndSurnameFinder = new ContextNameAndSurnameFinder(
                 new []{ "jest", "był", "była", "ma", "miał", "miała"}
                 );
+            _contextIlnessFinder = new ContextIlnessFinder((new[] { "choruje na", "chorował na", "chorowała na",
+                "cierpi na", "ma objawy", "wykazuje objawy", "chory na"}).ToList().Select(x => x.ToLower()).ToList());
             string workingDirectory = Environment.CurrentDirectory;
             string projectDirectory = Directory.GetParent(workingDirectory).Parent.Parent.FullName;
             string namesPath = System.IO.Path.Combine(projectDirectory, "data", "names.csv");
             string surnamesPath = System.IO.Path.Combine(projectDirectory, "data", "surnames.csv");
             var csvDataReader = new CsvDataReader(namesPath, surnamesPath);
-            _sensitiveDataFinder = new SensitiveDataFinder(csvDataReader.GetNames(), csvDataReader.GetSurnames(), _contextNameAndSurnameFinder);
+            _sensitiveDataFinder = new SensitiveDataFinder(csvDataReader.GetNames(), csvDataReader.GetSurnames(), _contextNameAndSurnameFinder, _contextIlnessFinder);
             _sensitiveDataCensor = new SensitiveDataCensor();
             _dictionary = new Dictionary<string, string>()
             {
@@ -56,6 +59,7 @@ namespace FileAnonimizationWpfVS
                 {"pesel", "censor last 7 digits"},
                 {"date", "leave only a year"},
                 {"suspected name or surname", "leave only first character"},
+                {"suspected ilness",  "leave only first character"}
             };
             selectedElement = new ObservableCollection<string>();
         }

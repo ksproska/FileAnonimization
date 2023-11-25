@@ -13,12 +13,16 @@ namespace FileAnonimizationWpfVS
         private readonly List<String> _names;
         private readonly List<String> _surnames;
         private readonly ContextNameAndSurnameFinder _contextNameAndSurnameFinder;
+        private readonly ContextIlnessFinder _contextIlnessFinder;
 
-        public SensitiveDataFinder(List<String> names, List<String> surnames, ContextNameAndSurnameFinder contextNameAndSurnameFinder)
+        public SensitiveDataFinder(List<String> names, List<String> surnames, 
+            ContextNameAndSurnameFinder contextNameAndSurnameFinder, 
+            ContextIlnessFinder contextIlnessFinder)
         {
             _names = names;
             _surnames = surnames;
             _contextNameAndSurnameFinder = contextNameAndSurnameFinder;
+            _contextIlnessFinder = contextIlnessFinder;
         }
 
         public (string, string)[] GetWordsToAnonimize(string text)
@@ -26,7 +30,8 @@ namespace FileAnonimizationWpfVS
             var punctuation = text.Where(Char.IsPunctuation).Distinct().ToArray();
             var words = text.Split().Select(x => x.Trim(punctuation));
             var wordsToAnonymize = words.Select(x => (x, GetSensitiveInformationType(x))).Where(x => x.Item2 != "");
-            return wordsToAnonymize.Concat(_contextNameAndSurnameFinder.GetNamesAndSurnamesIfContext(text)).ToArray();
+            return wordsToAnonymize.Concat(_contextNameAndSurnameFinder.GetNamesAndSurnamesIfContext(text))
+                .Concat(_contextIlnessFinder.GetIlnessIfContext(text)).ToArray();
         }
 
         public string GetSensitiveInformationType(string word)
@@ -53,10 +58,8 @@ namespace FileAnonimizationWpfVS
             }
             if (!Regex.IsMatch(text, @"^[0-9]{11}$"))
             {
-                Console.WriteLine(text);
                 text = text.Replace("O", "0");
                 text = text.Replace("I", "1");
-                Console.WriteLine(text);
             }
             return HasPeselCorrectChecksum(text) && HasPeselDate(text);
         }
@@ -197,5 +200,6 @@ namespace FileAnonimizationWpfVS
             }
             return _surnames.Contains(text.ToUpper());
         }
+        
     }
 }
