@@ -4,11 +4,11 @@ using System.Linq;
 
 namespace FileAnonimizationWpfVS
 {
-    public class ContextNameAndSurnameFinder
+    public class ContextFinder
     {
         private readonly string[] _verbs;
 
-        public ContextNameAndSurnameFinder(string[] verbs)
+        public ContextFinder(string[] verbs)
         {
             _verbs = verbs;
         }
@@ -18,6 +18,18 @@ namespace FileAnonimizationWpfVS
             return GetNamesAndSurnamesIfCapitalLetter(text).Concat(GetNamesAndSurnamesIfContextVerb(text))
                 .Distinct()
                 .Select(x => (x, "suspected name or surname"))
+                .ToArray();
+        }
+
+        public (string, string)[] GetAddresses(string text)
+        {
+            int numb;
+            return SplitWordsIntoPairs(text)
+                .Where(x => x.Item1.Length > 0 && x.Item2.Length > 0)
+                .Where(x => Char.IsUpper(x.Item1[0]) && int.TryParse(x.Item2, out numb))
+                // .SelectMany(m => new [] {m.Item1, m.Item2 })
+                .Select(x => x.Item1 + " " + x.Item2)
+                .Select(s => (s, "address"))
                 .ToArray();
         }
 

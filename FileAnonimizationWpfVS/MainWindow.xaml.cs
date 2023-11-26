@@ -17,7 +17,7 @@ namespace FileAnonimizationWpfVS
     /// </summary>
     public partial class MainWindow : Window
     {
-        private ContextNameAndSurnameFinder _contextNameAndSurnameFinder;
+        private ContextFinder _contextFinder;
         private ContextIlnessFinder _contextIlnessFinder;
         private SensitiveDataFinder _sensitiveDataFinder;
         private SensitiveDataCensor _sensitiveDataCensor;
@@ -33,7 +33,7 @@ namespace FileAnonimizationWpfVS
         {
             InitializeComponent();
 
-            _contextNameAndSurnameFinder = new ContextNameAndSurnameFinder(
+            _contextFinder = new ContextFinder(
                 new []{ "jest", "był", "była", "ma", "miał", "miała"}
                 );
             _contextIlnessFinder = new ContextIlnessFinder((new[] { "choruje na", "chorował na", "chorowała na",
@@ -43,7 +43,7 @@ namespace FileAnonimizationWpfVS
             string namesPath = System.IO.Path.Combine(projectDirectory, "data", "names.csv");
             string surnamesPath = System.IO.Path.Combine(projectDirectory, "data", "surnames.csv");
             var csvDataReader = new CsvDataReader(namesPath, surnamesPath);
-            _sensitiveDataFinder = new SensitiveDataFinder(csvDataReader.GetNames(), csvDataReader.GetSurnames(), _contextNameAndSurnameFinder, _contextIlnessFinder);
+            _sensitiveDataFinder = new SensitiveDataFinder(csvDataReader.GetNames(), csvDataReader.GetSurnames(), _contextFinder, _contextIlnessFinder);
             _sensitiveDataCensor = new SensitiveDataCensor();
             _dictionary = new Dictionary<string, string>()
             {
@@ -53,7 +53,9 @@ namespace FileAnonimizationWpfVS
                 {"pesel", "censor last 7 digits"},
                 {"date", "leave only a year"},
                 {"suspected name or surname", "leave only first character"},
-                {"suspected ilness",  "leave only first character"}
+                {"suspected ilness",  "leave only first character"},
+                {"address", "leave only first character"},
+                {"postal code", "leave only minus sign"}
             };
             selectedElement = new ObservableCollection<string>();
         }
