@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -71,11 +72,11 @@ namespace FileAnonimizationWpfVS
         private Brush _previousFill = null;
         private void ellipse_DragEnter(object sender, DragEventArgs e)
         {
-            Rectangle rectangle = sender as Rectangle;
+            Border rectangle = sender as Border;
             if (rectangle != null)
             {
                 // Save the current Fill brush so that you can revert back to this value in DragLeave.
-                _previousFill = rectangle.Fill;
+                _previousFill = rectangle.Background;
 
                 // If the DataObject contains string data, extract it.
                 if (e.Data.GetDataPresent(DataFormats.StringFormat))
@@ -87,7 +88,7 @@ namespace FileAnonimizationWpfVS
                     if (converter.IsValid(dataString))
                     {
                         Brush newFill = (Brush)converter.ConvertFromString(dataString);
-                        rectangle.Fill = newFill;
+                        rectangle.Background = newFill;
                     }
                 }
             }
@@ -113,15 +114,15 @@ namespace FileAnonimizationWpfVS
 
         private void ellipse_DragLeave(object sender, DragEventArgs e)
         {
-            Rectangle rectangle = sender as Rectangle;
+            Border rectangle = sender as Border;
             if (rectangle != null)
             {
-                rectangle.Fill = _previousFill;
+                rectangle.Background = _previousFill;
             }
         }
         private void ellipse_Drop(object sender, DragEventArgs e)
         {
-            Rectangle rectangle = sender as Rectangle;
+            Border rectangle = sender as Border;
             if (rectangle != null)
             {
                 // If the DataObject contains string data, extract it.
@@ -134,7 +135,7 @@ namespace FileAnonimizationWpfVS
                     if (converter.IsValid(dataString))
                     {
                         Brush newFill = (Brush)converter.ConvertFromString(dataString[0]);
-                        rectangle.Fill = newFill;
+                        rectangle.Background = newFill;
                     }
                     try
                     {

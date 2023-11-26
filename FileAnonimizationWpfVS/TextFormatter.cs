@@ -21,7 +21,7 @@ namespace FileAnonimizationWpfVS
                 Run beforeRun = new Run(run.Text.Substring(0, startIndex));
 
                 Run wordA = new Run(run.Text.Substring(startIndex, length));
-                wordA.Background = Brushes.Red;
+                wordA.Background = Brushes.Yellow;
 
 
                 Run remainingRun = new Run(run.Text.Substring(startIndex + length));
