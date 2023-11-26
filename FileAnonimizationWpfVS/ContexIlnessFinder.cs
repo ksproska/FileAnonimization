@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -21,7 +20,7 @@ namespace FileAnonimizationWpfVS
                 .ToArray();
         }
         
-        public List<(string, string)> SplitWordsIntoPairs(string text)
+        private List<(string, string)> SplitWordsIntoPairs(string text)
         {
             var words = text.Split().ToList();
             var result = new List<(string, string)>();
@@ -33,7 +32,7 @@ namespace FileAnonimizationWpfVS
             return result;
         }
 
-        public List<string> GetIlnessIfContextVerb(string text)
+        private List<string> GetIlnessIfContextVerb(string text)
         {
             var pairs = SplitWordsIntoPairs(text).ToList();
             return pairs

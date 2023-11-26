@@ -21,7 +21,7 @@ namespace FileAnonimizationWpfVS
                 .ToArray();
         }
 
-        public List<string> GetNamesAndSurnamesIfCapitalLetter(string text)
+        private List<string> GetNamesAndSurnamesIfCapitalLetter(string text)
         {
             var pairs = SplitWordsIntoPairs(text).ToList();
             var punctuation = text.Where(Char.IsPunctuation).Distinct().ToArray();
@@ -35,7 +35,7 @@ namespace FileAnonimizationWpfVS
                 .ToList();
         }
 
-        public List<(string, string)> SplitWordsIntoPairs(string text)
+        private List<(string, string)> SplitWordsIntoPairs(string text)
         {
             var words = text.Split().ToList();
             var result = new List<(string, string)>();
@@ -47,7 +47,7 @@ namespace FileAnonimizationWpfVS
             return result;
         }
 
-        public List<string> GetNamesAndSurnamesIfContextVerb(string text)
+        private List<string> GetNamesAndSurnamesIfContextVerb(string text)
         {
             var pairs = SplitWordsIntoPairs(text).ToList();
             return pairs

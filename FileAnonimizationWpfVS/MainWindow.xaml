@@ -3,23 +3,22 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:FileAnonimizationWpfVS"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <RichTextBox Name="richTextBox" Margin="50,122,447,27" TextChanged="richTB_TextChanged" MouseDown="RichTextBox_MouseDown" MouseUp="RichTextBox_MouseUp"/>
+        <RichTextBox Name="richTextBox" Margin="50,122,447,27" MouseDown="RichTextBox_MouseDown" MouseUp="RichTextBox_MouseUp"/>
         <Rectangle Fill="BlueViolet"
                  MouseMove="ellipse_MouseMove"
                  AllowDrop="True"
                  DragEnter="ellipse_DragEnter" DragLeave="ellipse_DragLeave"
                  DragOver="ellipse_DragOver" Drop="ellipse_Drop" Margin="50,10,447,340" />
         <TextBox x:Name="TextBox2" Margin="421,286,62,0" TextWrapping="Wrap" Text="Anonymized text will appear here..." 
-                 VerticalAlignment="Top" TextChanged="TextBox_TextChanged" Height="121"/>
+                 VerticalAlignment="Top" Height="121"/>
         <Label x:Name ="Label1" Content="Drop file here..." HorizontalAlignment="Left" Margin="156,34,0,0" VerticalAlignment="Top"/>
-        <ListBox x:Name="ListBefore"  d:ItemsSource="{d:SampleData ItemCount=5}" Margin="400,77,256,221" SelectionChanged="ListBox_SelectionChanged"/>
-        <Button x:Name ="BtnRemove" Content="-" HorizontalAlignment="Left" Margin="566,106,0,0" VerticalAlignment="Top" Click="Button_Click_1" Height="22" Width="20"/>
+        <ListBox x:Name="ListBefore"  d:ItemsSource="{d:SampleData ItemCount=5}" Margin="400,77,256,221"/>
+        <Button x:Name ="BtnRemove" Content="-" HorizontalAlignment="Left" Margin="566,106,0,0" VerticalAlignment="Top" Height="22" Width="20"/>
         <Button x:Name ="BtnAdd" Content="+" HorizontalAlignment="Left" Margin="566,138,0,0" VerticalAlignment="Top" Click="Button_Click_2" Height="22" Width="20"/>
-        <ListBox x:Name="ListAfter" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="617,77,41,221" SelectionChanged="ListBox_SelectionChanged_1"/>
+        <ListBox x:Name="ListAfter" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="617,77,41,221"/>
         <Button x:Name ="BtnOk" Content="OK" HorizontalAlignment="Left" Margin="560,237,0,0" VerticalAlignment="Top" Height="28" Width="40" Click="BtnOk_Click"/>
 
     </Grid>

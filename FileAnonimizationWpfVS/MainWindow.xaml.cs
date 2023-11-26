@@ -1,19 +1,12 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace FileAnonimizationWpfVS
@@ -64,10 +57,6 @@ namespace FileAnonimizationWpfVS
             selectedElement = new ObservableCollection<string>();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
         private void ellipse_MouseMove(object sender, MouseEventArgs e)
         {
             Rectangle rectangle = sender as Rectangle;
@@ -189,16 +178,6 @@ namespace FileAnonimizationWpfVS
             }
         }
 
-        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
-        }
-
-        private void richTB_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            
-        }
-
         private void RichTextBox_MouseDown(object sender, MouseButtonEventArgs e)
         {
             //isMousePressed = true;
@@ -226,16 +205,6 @@ namespace FileAnonimizationWpfVS
             }
         }
 
-        private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
-        }
-
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-
-        }
-
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
             
@@ -247,11 +216,6 @@ namespace FileAnonimizationWpfVS
             }
             ListAfter.ItemsSource = selectedElement;
             //ListAfter.Items.Add(selectedElement);
-        }
-
-        private void ListBox_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
-        {
-
         }
 
         private void BtnOk_Click(object sender, RoutedEventArgs e)

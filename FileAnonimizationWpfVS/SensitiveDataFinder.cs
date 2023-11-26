@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Printing;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace FileAnonimizationWpfVS
 {
@@ -34,7 +31,7 @@ namespace FileAnonimizationWpfVS
                 .Concat(_contextIlnessFinder.GetIlnessIfContext(text)).ToArray();
         }
 
-        public string GetSensitiveInformationType(string word)
+        private string GetSensitiveInformationType(string word)
         {
             if (IsPhoneNumber(word)) return "phone number";
             if (IsPesel(word)) return "pesel";
@@ -50,7 +47,7 @@ namespace FileAnonimizationWpfVS
             return Regex.IsMatch(text, pattern);
         }
 
-        public static bool IsPesel(string text)
+        private static bool IsPesel(string text)
         {   
             if (!Regex.IsMatch(text, @"^[0-9OI]{11}$"))
             {

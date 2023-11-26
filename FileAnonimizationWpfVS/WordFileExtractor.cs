@@ -1,9 +1,6 @@
 ﻿using DocumentFormat.OpenXml.Packaging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 
 namespace FileAnonimizationWpfVS
@@ -31,7 +28,7 @@ namespace FileAnonimizationWpfVS
                 foreach (XmlNode paragraphNode in paragraphNodes)
                 {
                     XmlNodeList textNodes = paragraphNode.SelectNodes(".//w:t", nsManager);
-                    foreach (System.Xml.XmlNode textNode in textNodes)
+                    foreach (XmlNode textNode in textNodes)
                     {
                         textBuilder.Append(textNode.InnerText);
                     }
