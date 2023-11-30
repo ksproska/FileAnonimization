@@ -6,7 +6,6 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -20,7 +19,8 @@ namespace FileAnonimizationWpfVS
     /// </summary>
     public partial class MainWindow : Window
     {
-        private ContextNameAndSurnameFinder _contextNameAndSurnameFinder;
+        private ContextFinder _contextFinder;
+        private ContextIlnessFinder _contextIlnessFinder;
         private SensitiveDataFinder _sensitiveDataFinder;
         private SensitiveDataCensor _sensitiveDataCensor;
         private Dictionary<string, string> _dictionary;
@@ -36,15 +36,17 @@ namespace FileAnonimizationWpfVS
         {
             InitializeComponent();
 
-            _contextNameAndSurnameFinder = new ContextNameAndSurnameFinder(
+            _contextFinder = new ContextFinder(
                 new []{ "jest", "był", "była", "ma", "miał", "miała"}
                 );
+            _contextIlnessFinder = new ContextIlnessFinder((new[] { "choruje na", "chorował na", "chorowała na",
+                "cierpi na", "ma objawy", "wykazuje objawy", "chory na"}).ToList().Select(x => x.ToLower()).ToList());
             string workingDirectory = Environment.CurrentDirectory;
             string projectDirectory = Directory.GetParent(workingDirectory).Parent.Parent.FullName;
             string namesPath = System.IO.Path.Combine(projectDirectory, "data", "names.csv");
             string surnamesPath = System.IO.Path.Combine(projectDirectory, "data", "surnames.csv");
             var csvDataReader = new CsvDataReader(namesPath, surnamesPath);
-            _sensitiveDataFinder = new SensitiveDataFinder(csvDataReader.GetNames(), csvDataReader.GetSurnames(), _contextNameAndSurnameFinder);
+            _sensitiveDataFinder = new SensitiveDataFinder(csvDataReader.GetNames(), csvDataReader.GetSurnames(), _contextFinder, _contextIlnessFinder);
             _sensitiveDataCensor = new SensitiveDataCensor();
             _dictionary = new Dictionary<string, string>()
             {
@@ -55,15 +57,14 @@ namespace FileAnonimizationWpfVS
                 {"date", "leave only a year"},
                 {"suspected name or surname", "leave only first character"},
                 {"user selection", "stars"}
+                {"suspected ilness",  "leave only first character"},
+                {"address", "leave only first character"},
+                {"postal code", "leave only minus sign"}
             };
             selectedElement = new ObservableCollection<string>();
             unselectedElement = new ObservableCollection<string>();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
         private void ellipse_MouseMove(object sender, MouseEventArgs e)
         {
             Rectangle rectangle = sender as Rectangle;
@@ -78,11 +79,11 @@ namespace FileAnonimizationWpfVS
         private Brush _previousFill = null;
         private void ellipse_DragEnter(object sender, DragEventArgs e)
         {
-            Rectangle rectangle = sender as Rectangle;
+            Border rectangle = sender as Border;
             if (rectangle != null)
             {
                 // Save the current Fill brush so that you can revert back to this value in DragLeave.
-                _previousFill = rectangle.Fill;
+                _previousFill = rectangle.Background;
 
                 // If the DataObject contains string data, extract it.
                 if (e.Data.GetDataPresent(DataFormats.StringFormat))
@@ -94,7 +95,7 @@ namespace FileAnonimizationWpfVS
                     if (converter.IsValid(dataString))
                     {
                         Brush newFill = (Brush)converter.ConvertFromString(dataString);
-                        rectangle.Fill = newFill;
+                        rectangle.Background = newFill;
                     }
                 }
             }
@@ -120,15 +121,15 @@ namespace FileAnonimizationWpfVS
 
         private void ellipse_DragLeave(object sender, DragEventArgs e)
         {
-            Rectangle rectangle = sender as Rectangle;
+            Border rectangle = sender as Border;
             if (rectangle != null)
             {
-                rectangle.Fill = _previousFill;
+                rectangle.Background = _previousFill;
             }
         }
         private void ellipse_Drop(object sender, DragEventArgs e)
         {
-            Rectangle rectangle = sender as Rectangle;
+            Border rectangle = sender as Border;
             if (rectangle != null)
             {
                 // If the DataObject contains string data, extract it.
@@ -141,7 +142,7 @@ namespace FileAnonimizationWpfVS
                     if (converter.IsValid(dataString))
                     {
                         Brush newFill = (Brush)converter.ConvertFromString(dataString[0]);
-                        rectangle.Fill = newFill;
+                        rectangle.Background = newFill;
                     }
                     try
                     {

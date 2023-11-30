@@ -1,26 +1,100 @@
-﻿<Window x:Class="FileAnonimizationWpfVS.MainWindow"
+<Window x:Class="FileAnonimizationWpfVS.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:FileAnonimizationWpfVS"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        <RichTextBox Name="richTextBox" Margin="50,122,447,27"/>
-        <Rectangle Fill="BlueViolet"
-                 MouseMove="ellipse_MouseMove"
-                 AllowDrop="True"
-                 DragEnter="ellipse_DragEnter" DragLeave="ellipse_DragLeave"
-                 DragOver="ellipse_DragOver" Drop="ellipse_Drop" Margin="50,10,447,340" />
-        <TextBox x:Name="TextBox2" Margin="424,250,58,63" TextWrapping="Wrap" Text="Anonymized text will appear here..." TextChanged="TextBox_TextChanged"/>
-        <Label x:Name ="Label1" Content="Drop file here..." HorizontalAlignment="Left" Margin="156,34,0,0" VerticalAlignment="Top"/>
-        <ListBox x:Name="ListBefore"  d:ItemsSource="{d:SampleData ItemCount=5}" Margin="400,77,256,221" SelectionChanged="ListBox_SelectionChanged"/>
-        <Button x:Name ="BtnRemove" Content="-" HorizontalAlignment="Left" Margin="566,106,0,0" VerticalAlignment="Top" Click="Button_Click_1" Height="22" Width="20"/>
-        <Button x:Name ="BtnAdd" Content="+" HorizontalAlignment="Left" Margin="566,138,0,0" VerticalAlignment="Top" Click="Button_Click_2" Height="22" Width="20"/>
-        <ListBox x:Name="ListAfter" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="617,77,41,221" SelectionChanged="ListBox_SelectionChanged_1"/>
-        <Button x:Name ="BtnOk" Content="OK" HorizontalAlignment="Left" Margin="563,217,0,0" VerticalAlignment="Top" Height="28" Width="40" Click="BtnOk_Click"/>
-        <Button x:Name ="ExportBtn" Content="Export" HorizontalAlignment="Left" Margin="563,387,0,0" VerticalAlignment="Top" Click="ExportBtn_Click"/>
+        Title="Text censor" Height="450" Width="800" Background="LightSkyBlue">
+    <Grid Margin="5">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="40*"/>
+            <ColumnDefinition Width="60*"/>
+        </Grid.ColumnDefinitions>
 
+        <!-- Left Panel -->
+        <Border Grid.Column="0">
+            <!-- Content for the left panel -->
+            <Grid>
+                <!-- Define two rows with 15% and * (remaining space) height respectively -->
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="20*"/>
+                    <RowDefinition Height="80*"/>
+                </Grid.RowDefinitions>
+
+                <!-- Upper half of the left panel -->
+                <Border Grid.Row="0" Background="Transparent" MouseMove="ellipse_MouseMove" BorderBrush="Transparent"
+                        AllowDrop="True"
+                        DragEnter="ellipse_DragEnter" DragLeave="ellipse_DragLeave"
+                        DragOver="ellipse_DragOver" Drop="ellipse_Drop">
+                    <!-- <TextBlock Text="Upper Half" HorizontalAlignment="Center" VerticalAlignment="Center"/> -->
+                    <Label Content="Drop file here..." HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Border>
+
+                <!-- Lower half of the left panel -->
+                <Border Grid.Row="1" Background="Transparent">
+                    <!-- Content for the lower half -->
+                    <RichTextBox Name="richTextBox" MouseDown="RichTextBox_MouseDown" MouseUp="RichTextBox_MouseUp" Margin="5" BorderThickness="5" BorderBrush="White"/>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- Right Panel -->
+        <Border Grid.Column="1" Background="Transparent">
+            <Grid>
+                <!-- Define two rows with 40% and 60% height respectively -->
+                <Grid.RowDefinitions>
+                <RowDefinition Height="40*"/>
+                <RowDefinition Height="60*"/>
+                </Grid.RowDefinitions>
+
+                <!-- Upper part of the right panel -->
+                <Border Grid.Row="0">
+                    <!-- Content for the upper part -->
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="47*"/>
+                            <ColumnDefinition Width="6*"/>
+                            <ColumnDefinition Width="47*"/>
+                        </Grid.ColumnDefinitions>
+                        <!-- Left part of the right panel with ListBox -->
+                        <Border Grid.Column="0">
+                            <ListBox x:Name="ListBefore" d:ItemsSource="{d:SampleData ItemCount=5}" BorderThickness="5" BorderBrush="Transparent"/>
+                        </Border>
+
+                        <!-- Middle part of the right panel -->
+                        <Border Grid.Column="1">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+                                <Border Grid.Row="0">
+                                    <Button Content="+" Background="White" VerticalAlignment="Center" Click="Button_Click_2"/>
+                                </Border>
+                                <Border Grid.Row="1">
+                                    <Button Content="-" Background="White" VerticalAlignment="Center"/>
+                                </Border>
+                                <Border Grid.Row="2">
+                                    <Button Content="OK" Background="White" VerticalAlignment="Center" Click="BtnOk_Click"/>
+                                </Border>
+                            </Grid>
+                        </Border>
+
+                        <!-- Right part of the right panel with TextBox -->
+                        <Border Grid.Column="2">
+                            <ListBox x:Name="ListAfter" d:ItemsSource="{d:SampleData ItemCount=5}" BorderThickness="5" BorderBrush="Transparent"/>
+                        </Border>
+                    </Grid>
+                </Border>
+
+                <!-- Lower part of the right panel -->
+                <Border Grid.Row="1">
+                    <!-- Content for the lower part -->
+                    <TextBox x:Name="TextBox2" TextWrapping="Wrap" Text="Anonymized text will appear here..." Margin="5" BorderThickness="5" BorderBrush="White"/>
+                </Border>
+            </Grid>
+            <!-- Content for the right panel -->
+        </Border>
     </Grid>
 </Window>

@@ -38,6 +38,9 @@ namespace FileAnonimizationWpfVS
                 case "leave only a year":
                     text = LeaveOnlyAYear(text, word);
                     return text;
+                case "leave only minus sign":
+                    text = LeaveMinusSign(text, word);
+                    return text;
                 case "stars":
                     text = AnonymizeToStarsOfTheSameLength(text, word);
                     return text;
@@ -45,14 +48,59 @@ namespace FileAnonimizationWpfVS
             return text;
         }
 
+        private string LeaveMinusSign(string text, string word)
+        {
+            StringBuilder result = new StringBuilder();
+            foreach (char c in word)
+            {
+                if (c != ' ' && c != '-')
+                {
+                    result.Append('*');
+                }
+                else
+                {
+                    result.Append(c);
+                }
+            }
+
+            return text.Replace(word, result.ToString());
+        }
+
         private string LeaveOnlyFirstLetter(string text, string word)
         {
-            return text.Replace(word, word[0] + new String('*', word.Length - 1));
+            StringBuilder result = new StringBuilder();
+            foreach (char c in word)
+            {
+                if (c != ' ')
+                {
+                    result.Append('*');
+                }
+                else
+                {
+                    result.Append(c);
+                }
+            }
+
+            result.Remove(0, 1);
+            return text.Replace(word, word[0] + result.ToString());
         }
 
         private string AnonymizeToStarsOfTheSameLength(string text, string word)
         {
-            return text.Replace(word, new String('*', word.Length));
+            StringBuilder result = new StringBuilder();
+            foreach (char c in word)
+            {
+                if (c != ' ')
+                {
+                    result.Append('*');
+                }
+                else
+                {
+                    result.Append(c);
+                }
+            }
+
+            return text.Replace(word, result.ToString());
         }
 
         private string LeaveOnlyAYear(string text, string word)

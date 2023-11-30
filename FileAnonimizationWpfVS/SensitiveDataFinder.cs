@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Printing;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace FileAnonimizationWpfVS
 {
@@ -12,13 +9,17 @@ namespace FileAnonimizationWpfVS
     {
         private readonly List<String> _names;
         private readonly List<String> _surnames;
-        private readonly ContextNameAndSurnameFinder _contextNameAndSurnameFinder;
+        private readonly ContextFinder _contextNameAndSurnameFinder;
+        private readonly ContextIlnessFinder _contextIlnessFinder;
 
-        public SensitiveDataFinder(List<String> names, List<String> surnames, ContextNameAndSurnameFinder contextNameAndSurnameFinder)
+        public SensitiveDataFinder(List<String> names, List<String> surnames, 
+            ContextFinder contextNameAndSurnameFinder, 
+            ContextIlnessFinder contextIlnessFinder)
         {
             _names = names;
             _surnames = surnames;
             _contextNameAndSurnameFinder = contextNameAndSurnameFinder;
+            _contextIlnessFinder = contextIlnessFinder;
         }
 
         public (string, string)[] GetWordsToAnonimize(string text)
@@ -26,12 +27,17 @@ namespace FileAnonimizationWpfVS
             var punctuation = text.Where(Char.IsPunctuation).Distinct().ToArray();
             var words = text.Split().Select(x => x.Trim(punctuation));
             var wordsToAnonymize = words.Select(x => (x, GetSensitiveInformationType(x))).Where(x => x.Item2 != "");
-            return wordsToAnonymize.Concat(_contextNameAndSurnameFinder.GetNamesAndSurnamesIfContext(text)).ToArray();
+            return wordsToAnonymize
+                .Concat(_contextNameAndSurnameFinder.GetNamesAndSurnamesIfContext(text))
+                .Concat(_contextIlnessFinder.GetIlnessIfContext(text))
+                .Concat(_contextNameAndSurnameFinder.GetAddresses(text))
+                .ToArray();
         }
 
-        public string GetSensitiveInformationType(string word)
+        private string GetSensitiveInformationType(string word)
         {
             if (IsPhoneNumber(word)) return "phone number";
+            if (IsPostalCode(word)) return "postal code";
             if (IsPesel(word)) return "pesel";
             if (IsDate(word)) return "date";
             if (IsName(word)) return "name";
@@ -54,8 +60,14 @@ namespace FileAnonimizationWpfVS
             string pattern = @"^(\+[0-9]{11}|[0-9]{9}|[0-9]{3}-[0-9]{3}-[0-9]{3})$";
             return Regex.IsMatch(text, pattern);
         }
+        
+        private static bool IsPostalCode(string text)
+        {
+            string pattern = @"^[0-9]{2}-[0-9]{3}$";
+            return Regex.IsMatch(text, pattern);
+        }
 
-        public static bool IsPesel(string text)
+        private static bool IsPesel(string text)
         {   
             if (!Regex.IsMatch(text, @"^[0-9OI]{11}$"))
             {
@@ -63,10 +75,8 @@ namespace FileAnonimizationWpfVS
             }
             if (!Regex.IsMatch(text, @"^[0-9]{11}$"))
             {
-                Console.WriteLine(text);
                 text = text.Replace("O", "0");
                 text = text.Replace("I", "1");
-                Console.WriteLine(text);
             }
             return HasPeselCorrectChecksum(text) && HasPeselDate(text);
         }
@@ -207,5 +217,6 @@ namespace FileAnonimizationWpfVS
             }
             return _surnames.Contains(text.ToUpper());
         }
+        
     }
 }
