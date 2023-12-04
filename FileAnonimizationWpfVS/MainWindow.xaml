@@ -33,7 +33,7 @@
                 <!-- Lower half of the left panel -->
                 <Border Grid.Row="1" Background="Transparent">
                     <!-- Content for the lower half -->
-                    <RichTextBox Name="richTextBox" MouseDown="RichTextBox_MouseDown" MouseUp="RichTextBox_MouseUp" Margin="5" BorderThickness="5" BorderBrush="White"/>
+                    <RichTextBox Name="richTextBox" Margin="5" BorderThickness="5" BorderBrush="White"/>
                 </Border>
             </Grid>
         </Border>
@@ -43,8 +43,9 @@
             <Grid>
                 <!-- Define two rows with 40% and 60% height respectively -->
                 <Grid.RowDefinitions>
-                <RowDefinition Height="40*"/>
-                <RowDefinition Height="60*"/>
+                    <RowDefinition Height="40*"/>
+                    <RowDefinition Height="50*"/>
+                    <RowDefinition Height="10*"/>
                 </Grid.RowDefinitions>
 
                 <!-- Upper part of the right panel -->
@@ -73,7 +74,7 @@
                                     <Button Content="+" Background="White" VerticalAlignment="Center" Click="Button_Click_2"/>
                                 </Border>
                                 <Border Grid.Row="1">
-                                    <Button Content="-" Background="White" VerticalAlignment="Center"/>
+                                    <Button Content="-" Background="White" VerticalAlignment="Center" Click="Button_Click_1"/>
                                 </Border>
                                 <Border Grid.Row="2">
                                     <Button Content="OK" Background="White" VerticalAlignment="Center" Click="BtnOk_Click"/>
@@ -91,7 +92,13 @@
                 <!-- Lower part of the right panel -->
                 <Border Grid.Row="1">
                     <!-- Content for the lower part -->
-                    <TextBox x:Name="TextBox2" TextWrapping="Wrap" Text="Anonymized text will appear here..." Margin="5" BorderThickness="5" BorderBrush="White"/>
+                    <TextBox x:Name="TextBox2" TextWrapping="Wrap" Text="Anonymized text will appear here..." Margin="5" BorderThickness="5" BorderBrush="White" TextChanged="TextBox2_TextChanged"/>
+                </Border>
+
+                <!-- Lower part of the right panel -->
+                <Border Grid.Row="2">
+                    <!-- Content for the lower part -->
+                    <Button x:Name="ExportBtn" Content="Export" Background="White" VerticalAlignment="Center" Click="Export_Click" Margin="194,0,195,0"/>
                 </Border>
             </Grid>
             <!-- Content for the right panel -->

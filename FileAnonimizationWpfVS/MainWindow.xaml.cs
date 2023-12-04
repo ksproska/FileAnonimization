@@ -56,7 +56,7 @@ namespace FileAnonimizationWpfVS
                 {"pesel", "censor last 7 digits"},
                 {"date", "leave only a year"},
                 {"suspected name or surname", "leave only first character"},
-                {"user selection", "stars"}
+                {"user selection", "stars"},
                 {"suspected ilness",  "leave only first character"},
                 {"address", "leave only first character"},
                 {"postal code", "leave only minus sign"}
@@ -247,6 +247,16 @@ namespace FileAnonimizationWpfVS
             }
         }
 
+        private void Export_Click(object sender, RoutedEventArgs e)
+        {
+            exporttoword.Application wordapp = new exporttoword.Application();
+            wordapp.Visible = true;
+            exporttoword.Document worddoc;
+            object wordobj = System.Reflection.Missing.Value;
+            worddoc = wordapp.Documents.Add(ref wordobj);
+            wordapp.Selection.TypeText(TextBox2.Text);
+            wordapp = null;
+        }
         private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
 
@@ -263,15 +273,13 @@ namespace FileAnonimizationWpfVS
 
         }
 
-        private void ExportBtn_Click(object sender, RoutedEventArgs e)
+
+        private void TextBox2_TextChanged(object sender, TextChangedEventArgs e)
         {
-            exporttoword.Application wordapp = new exporttoword.Application();
-            wordapp.Visible = true;
-            exporttoword.Document worddoc;
-            object wordobj = System.Reflection.Missing.Value;
-            worddoc = wordapp.Documents.Add(ref wordobj);
-            wordapp.Selection.TypeText(TextBox2.Text);
-            wordapp = null;
+
         }
+
+        
+        
     }
 }
