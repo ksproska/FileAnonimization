@@ -30,6 +30,7 @@ namespace FileAnonimizationWpfVS
         private static (string, string)[] wordsToAnonimize;
         private ObservableCollection<string> listBeforeItemsSource;
         private ObservableCollection<string> listAfterItemsSource;
+        private List<Run> highlightedWords;
 
         public MainWindow()
         {
@@ -151,19 +152,16 @@ namespace FileAnonimizationWpfVS
                         richTextBox.Document = flowDoc;
 
                         Paragraph paragraph = new Paragraph();
-                        var words = wordsToAnonimize.Select(g => g.Item1);
+                        var words = wordsToAnonimize.Select(g => g.Item1).ToList();
 
                         var punctuation = text.Where(Char.IsPunctuation).Distinct().ToArray();
                         var wordsAll = text.Split().Select(x => x.Trim(punctuation));
-                        var onlyWordsToAnonimize = wordsAll.Where(x => words.Contains(x));
-
-                        Paragraph finalParagraph =
-                            TextFormatter.FormatText(paragraph, text, onlyWordsToAnonimize.ToList());
-                        flowDoc.Blocks.Add(finalParagraph);
-
-                        string t = new TextRange(finalParagraph.ContentStart, paragraph.ContentEnd).Text;
-
                         listBeforeItemsSource = new ObservableCollection<string>(words.Distinct().OrderBy(x => x).ToList());
+
+                        highlightedWords = TextFormatter.FormatText(paragraph, text, words);
+                        flowDoc.Blocks.Add(paragraph);
+                        string t = new TextRange(paragraph.ContentStart, paragraph.ContentEnd).Text;
+
                         ListBefore.ItemsSource = listBeforeItemsSource;
                         ListAfter.ItemsSource = listAfterItemsSource;
                         ButtonPlus.IsEnabled = true;
@@ -190,6 +188,9 @@ namespace FileAnonimizationWpfVS
                 listBeforeItemsSource.Remove(listBeforeSelectedItem);
                 ListBefore.UnselectAll();
                 ListAfter.Items.Add(listBeforeSelectedItem);
+
+                var selectedRuns = highlightedWords.Where(r => r.Text == listBeforeSelectedItem).ToList();
+                selectedRuns.ForEach(r => r.Background = Brushes.LightSalmon);
             }
             else if (richTextBox.Selection != null && richTextBox.Selection.Text != "")
             {
@@ -214,6 +215,9 @@ namespace FileAnonimizationWpfVS
                 ListAfter.Items.Remove(listAfterSelectedItem);
                 ListAfter.UnselectAll();
                 listBeforeItemsSource.Add(listAfterSelectedItem);
+                
+                var selectedRuns = highlightedWords.Where(r => r.Text == listAfterSelectedItem).ToList();
+                selectedRuns.ForEach(r => r.Background = Brushes.Yellow);
             }
             else
             {
