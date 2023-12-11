@@ -7,10 +7,12 @@ namespace FileAnonimizationWpfVS
     public class ContextFinder
     {
         private readonly string[] _verbs;
+        private readonly string[] _numberInd;
 
-        public ContextFinder(string[] verbs)
+        public ContextFinder(string[] verbs, string[] numberInd)
         {
             _verbs = verbs;
+            _numberInd = numberInd;
         }
         
         public (string, string)[] GetNamesAndSurnamesIfContext(string text)
@@ -68,6 +70,25 @@ namespace FileAnonimizationWpfVS
                 .Select(x => x.Item1)
                 .Distinct()
                 .ToList();
+        }
+        
+        public List<String> GetNumberIfContextWords(string text)
+        {
+            var pairs = SplitWordsIntoPairs(text).ToList();
+            return pairs
+                .Where(x => x.Item1.Length > 0 && x.Item2.Length > 0)
+                .Where(x => _numberInd.Contains(x.Item1))
+                .Select(x => x.Item2)
+                .Distinct()
+                .ToList();
+        }
+        
+        public (string, string)[] GetNumberIfContext(string text)
+        {
+            return GetNumberIfContextWords(text)
+                .Distinct()
+                .Select(x => (x, "number"))
+                .ToArray();
         }
     }
 }

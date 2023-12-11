@@ -37,7 +37,8 @@ namespace FileAnonimizationWpfVS
             InitializeComponent();
 
             _contextFinder = new ContextFinder(
-                new[] { "jest", "był", "była", "ma", "miał", "miała" }
+                new[] { "jest", "był", "była", "ma", "miał", "miała" },
+                new[] {"nr.", "numer", "number"}
             );
             _contextIlnessFinder = new ContextIlnessFinder((new[]
             {

@@ -29,6 +29,7 @@ namespace FileAnonimizationWpfVS
             var wordsToAnonymize = words.Select(x => (x, GetSensitiveInformationType(x))).Where(x => x.Item2 != "");
             return wordsToAnonymize
                 .Concat(_contextNameAndSurnameFinder.GetNamesAndSurnamesIfContext(text))
+                .Concat(_contextNameAndSurnameFinder.GetNumberIfContext(text))
                 .Concat(_contextIlnessFinder.GetIlnessIfContext(text))
                 .Concat(_contextNameAndSurnameFinder.GetAddresses(text))
                 .ToArray();
