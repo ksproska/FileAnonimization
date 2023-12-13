@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.IO.IsolatedStorage;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -269,6 +271,163 @@ namespace FileAnonimizationWpfVS
             worddoc = wordapp.Documents.Add(ref wordobj);
             wordapp.Selection.TypeText(TextBox2.Text);
             wordapp = null;
+        }
+
+        private void Dictionary_Click(object sender, RoutedEventArgs e)
+        {
+
+            ListBox lb = new ListBox();
+            Window dict = new Window();
+            dict.Width = 300;
+            dict.Height = 300;
+            
+            string workingDirectory = Environment.CurrentDirectory;
+            string fileDir = Directory.GetParent(workingDirectory).Parent.Parent.FullName;
+            string fileDest = System.IO.Path.Combine(fileDir, "dictionary.txt");
+            string dictContent;
+            
+            using (var sr = new StreamReader(fileDest))
+            {
+                dictContent = sr.ReadToEnd();
+            }
+            
+            Grid grid = new Grid();
+            RowDefinition rowDef1 = new RowDefinition();
+            RowDefinition rowDef2 = new RowDefinition();
+            ColumnDefinition colDef1 = new ColumnDefinition();
+            ColumnDefinition colDef2 = new ColumnDefinition();
+            ColumnDefinition colDef3 = new ColumnDefinition();
+
+
+            grid.RowDefinitions.Add(rowDef1);
+            grid.RowDefinitions.Add(rowDef2);
+            grid.ColumnDefinitions.Add(colDef1);
+            grid.ColumnDefinitions.Add(colDef2);
+            grid.ColumnDefinitions.Add(colDef3);
+
+            grid.RowDefinitions[0].Height = new GridLength(7, GridUnitType.Star);
+            grid.ColumnDefinitions[0].Width = new GridLength(3, GridUnitType.Star);
+            grid.ColumnDefinitions[1].Width = new GridLength(3, GridUnitType.Star);
+            grid.ColumnDefinitions[2].Width = new GridLength(4, GridUnitType.Star);
+
+            List<string> dictList = new List<string>();
+            dictList = dictContent.Split("\n").ToList();
+            //dictList = dictContent.Split("\r").ToList();
+
+            dictList.Remove("");
+
+            if (dictList != null)
+            {
+                for(int i = 0; i < dictList.Count; i++)
+                {
+                    dictList[i] = dictList[i].Replace("\r", "");
+                }
+            }
+
+            
+
+            lb.ItemsSource = dictList;
+            
+            Button deleteBtn = new Button();
+            deleteBtn.Name = "Delete";
+            deleteBtn.Content = "Remove";
+            deleteBtn.Visibility = Visibility.Visible;
+           
+            
+            deleteBtn.Click += new RoutedEventHandler(delegate (Object o, RoutedEventArgs a)
+            {
+                ObservableCollection<string> dictWords = new ObservableCollection<string>();
+                foreach(string word in lb.Items) {
+                    dictWords.Add(word);
+                }
+                dictWords.Remove(lb.SelectedItem as string);
+                lb.ItemsSource = dictWords; 
+            });
+
+            Button saveBtn = new Button();
+            saveBtn.Name = "Save";
+            saveBtn.Content = "Save";
+            saveBtn.Visibility = Visibility.Visible;
+
+            saveBtn.Click += new RoutedEventHandler(delegate (Object o, RoutedEventArgs a)
+            {
+                ObservableCollection<string> dictWords = new ObservableCollection<string>();
+                StreamWriter writeFile;
+                writeFile = new StreamWriter(new IsolatedStorageFileStream(fileDest, FileMode.Truncate));
+                writeFile.Close();
+
+                if (!lb.Items.IsEmpty)
+                {
+                    File.AppendAllText(fileDest, (lb.Items[0] as string));
+                    for(int i = 1; i < lb.Items.Count; i++)
+                    {
+                        File.AppendAllText(fileDest, Environment.NewLine + (lb.Items[i] as string));
+                    }
+                }
+                dict.Close();
+            });
+
+            Button addBtn = new Button();
+            addBtn.Name = "Add";
+            addBtn.Content = "Add";
+            addBtn.Visibility = Visibility.Visible;
+
+            addBtn.Click += new RoutedEventHandler(delegate (Object o, RoutedEventArgs a)
+            {
+                ListAfter.Items.Add(lb.SelectedItem as string);
+                lb.UnselectAll();
+                ButtonMinus.IsEnabled = true;
+                ApplySelected();
+            });
+
+
+            Grid.SetRow(lb, 0);
+            Grid.SetRow(deleteBtn, 1);
+            Grid.SetRow(saveBtn, 1);
+            Grid.SetRow(addBtn, 1);
+            Grid.SetColumn(deleteBtn, 0);
+            Grid.SetColumn(saveBtn, 1);
+            Grid.SetColumn(addBtn, 2);
+            Grid.SetColumnSpan(lb, 3);
+
+            grid.Children.Add(lb);
+            grid.Children.Add(deleteBtn);
+            grid.Children.Add(saveBtn);
+            grid.Children.Add(addBtn);
+
+            dict.Content = grid;
+            dict.Show();
+        }
+
+        private void DeleteBtn_Click(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
+        private void rtb_MouseUp(object sender, MouseEventArgs e)
+        {
+            ContextMenu cm = new ContextMenu();
+            MenuItem item = new MenuItem();
+            item.Header = "Add to dictionary";
+            item.Click += new RoutedEventHandler(AddToDictinary);
+            cm.Items.Add(item);
+            ((RichTextBox)sender).ContextMenu = cm;
+
+        }
+
+        private void AddToDictinary(object sender, RoutedEventArgs e)
+        {
+            //TextWriter tw = new StreamWriter("dictionary.txt");
+            string workingDirectory = Environment.CurrentDirectory;
+            string fileDir = Directory.GetParent(workingDirectory).Parent.Parent.FullName;
+            string fileDest = System.IO.Path.Combine(fileDir, "dictionary.txt");
+            File.AppendAllText(fileDest, richTextBox.Selection.Text + Environment.NewLine);
+           
+        }
+
+        private void richTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
         }
     }
 }

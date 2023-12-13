@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="Text censor" MinHeight="550" MinWidth="800" Height="550" Width="800" Background="LightSkyBlue">
+        Title="Text censor" MinHeight="550" MinWidth="800" Height="671" Width="966" Background="LightSkyBlue">
     <Grid Margin="5">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="50*"/>
@@ -39,7 +39,7 @@
                 <!-- Lower half of the left panel -->
                 <Border Grid.Row="2" Background="Transparent">
                     <!-- Content for the lower half -->
-                    <RichTextBox Name="richTextBox" Margin="5" BorderThickness="5" BorderBrush="White" FontFamily="Consolas"/>
+                    <RichTextBox Name="richTextBox" Margin="5" BorderThickness="5" BorderBrush="White" FontFamily="Consolas" MouseRightButtonUp="rtb_MouseUp" TextChanged="richTextBox_TextChanged"/>
                 </Border>
             </Grid>
         </Border>
@@ -99,8 +99,20 @@
 
                 <!-- Lower part of the right panel -->
                 <Border Grid.Row="2">
-                    <!-- Content for the lower part -->
-                    <Button x:Name="ButtonExport" IsEnabled="False" Content="Export" Click="Export_Click" Margin="5" BorderBrush="Transparent" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="SteelBlue" Foreground="White" FontWeight="Bold" FontSize="17"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="50*"/>
+                            <ColumnDefinition Width="50*"/>
+
+                        </Grid.ColumnDefinitions>
+                        <!-- Content for the lower part -->
+                        <Border Grid.Column="0">
+                            <Button x:Name="ButtonExport" IsEnabled="False" Content="Export" Click="Export_Click" Margin="5" BorderBrush="Transparent" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="SteelBlue" Foreground="White" FontWeight="Bold" FontSize="17"/>
+                        </Border>
+                        <Border Grid.Column="1">
+                            <Button x:Name="ButtonDictionary" IsEnabled="True" Content="Dictionary" Click="Dictionary_Click" Margin="5" BorderBrush="Transparent" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="SteelBlue" Foreground="White" FontWeight="Bold" FontSize="17"/>
+                        </Border>
+                    </Grid>
                 </Border>
             </Grid>
             <!-- Content for the right panel -->
