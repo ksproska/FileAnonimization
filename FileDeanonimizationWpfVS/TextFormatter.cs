@@ -69,11 +69,15 @@ namespace FileAnonimizationWpfVS
                     paragraph.Inlines.Add(beforeText);
                     startInx += textBeforsSTr.Length;
                 }
-                Run selectedWord = new Run(wordWithInex.Item2);
-                highlighted.Add(selectedWord);
-                selectedWord.Background = Brushes.LightPink;
-                paragraph.Inlines.Add(selectedWord);
-                startInx += wordWithInex.Item2.Length;
+
+                if (startInx <= wordWithInex.Item1)
+                {
+                    Run selectedWord = new Run(wordWithInex.Item2);
+                    highlighted.Add(selectedWord);
+                    selectedWord.Background = Brushes.LightPink;
+                    paragraph.Inlines.Add(selectedWord);
+                    startInx += wordWithInex.Item2.Length;
+                }
             }
             var remainingText = text.Substring(startInx, text.Length - startInx);
             Run remainingRun = new Run(remainingText);
