@@ -42,9 +42,8 @@
                 <!-- Lower half of the left panel -->
                 <Border Grid.Row="2" Background="Transparent">
                     <!-- Content for the lower half -->
-                    <RichTextBox Name="richTextBox" Margin="5" BorderThickness="5" BorderBrush="White"
-                                 FontFamily="Consolas" MouseRightButtonUp="rtb_MouseUp"
-                                 TextChanged="richTextBox_TextChanged" />
+                    <RichTextBox Name="OriginalTextBox" Margin="5" BorderThickness="5" BorderBrush="White"
+                                 FontFamily="Consolas" />
                 </Border>
             </Grid>
         </Border>
@@ -65,7 +64,7 @@
                 <!-- Lower part of the right panel -->
                 <Border Grid.Row="1">
                     <!-- Content for the lower part -->
-                    <TextBox x:Name="TextBox2" TextWrapping="Wrap" Text="Unanonymized text will appear here..."
+                    <RichTextBox x:Name="DeanonymizedTextBox"
                              Margin="5" BorderThickness="5" BorderBrush="White" FontFamily="Consolas" />
                 </Border>
 

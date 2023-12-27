@@ -15,11 +15,8 @@ namespace FileAnonimizationWpfVS
 {
     public partial class MainWindow : Window
     {
-        private ContextFinder _contextFinder;
-        private ContextIlnessFinder _contextIlnessFinder;
-        private SensitiveDataFinder _sensitiveDataFinder;
+        private AnonymizedDataFinder _anonymizedDataFinder;
         private SensitiveDataCensor _sensitiveDataCensor;
-        private Dictionary<string, string> _dictionary;
         private bool isMousePressed = false;
         private TextPointer selectionStart;
         private TextPointer selectionEnd;
@@ -27,7 +24,7 @@ namespace FileAnonimizationWpfVS
         ObservableCollection<string> selectedElement;
         ObservableCollection<string> unselectedElement;
         string text = "";
-        private static (string, string)[] wordsToAnonimize;
+        private static string[] anonimizedWords;
         private ObservableCollection<string> listBeforeItemsSource;
         private ObservableCollection<string> listAfterItemsSource;
         private List<Run> highlightedWords;
@@ -35,37 +32,13 @@ namespace FileAnonimizationWpfVS
         public MainWindow()
         {
             InitializeComponent();
-
-            _contextFinder = new ContextFinder(
-                new[] { "jest", "był", "była", "ma", "miał", "miała" },
-                new[] {"nr.", "numer", "number"}
-            );
-            _contextIlnessFinder = new ContextIlnessFinder((new[]
-            {
-                "choruje na", "chorował na", "chorowała na",
-                "cierpi na", "ma objawy", "wykazuje objawy", "chory na"
-            }).ToList().Select(x => x.ToLower()).ToList());
             string workingDirectory = Environment.CurrentDirectory;
             string projectDirectory = Directory.GetParent(workingDirectory).Parent.Parent.FullName;
             string namesPath = System.IO.Path.Combine(projectDirectory, "data", "names.csv");
             string surnamesPath = System.IO.Path.Combine(projectDirectory, "data", "surnames.csv");
             var csvDataReader = new CsvDataReader(namesPath, surnamesPath);
-            _sensitiveDataFinder = new SensitiveDataFinder(csvDataReader.GetNames(), csvDataReader.GetSurnames(),
-                _contextFinder, _contextIlnessFinder);
+            _anonymizedDataFinder = new AnonymizedDataFinder();
             _sensitiveDataCensor = new SensitiveDataCensor();
-            _dictionary = new Dictionary<string, string>()
-            {
-                { "name", "leave only first character" },
-                { "surname", "leave only first character" },
-                { "phone number", "censor last 6 digits" },
-                { "pesel", "censor last 7 digits" },
-                { "date", "leave only a year" },
-                { "suspected name or surname", "leave only first character" },
-                { "user selection", "stars" },
-                { "suspected ilness", "leave only first character" },
-                { "address", "leave only first character" },
-                { "postal code", "leave only minus sign" }
-            };
             selectedElement = new ObservableCollection<string>();
             unselectedElement = new ObservableCollection<string>();
         }
@@ -147,19 +120,12 @@ namespace FileAnonimizationWpfVS
 
                     try
                     {
-                        wordsToAnonimize = _sensitiveDataFinder.GetWordsToAnonimize(text);
-                        processedText = _sensitiveDataCensor.Anonymize(text, wordsToAnonimize, _dictionary);
+                        anonimizedWords = _anonymizedDataFinder.GetAnonimizedWords(text);
                         FlowDocument flowDoc = new FlowDocument();
-                        richTextBox.Document = flowDoc;
+                        OriginalTextBox.Document = flowDoc;
 
                         Paragraph paragraph = new Paragraph();
-                        var words = wordsToAnonimize.Select(g => g.Item1).ToList();
-
-                        var punctuation = text.Where(Char.IsPunctuation).Distinct().ToArray();
-                        var wordsAll = text.Split().Select(x => x.Trim(punctuation));
-                        listBeforeItemsSource = new ObservableCollection<string>(words.Distinct().OrderBy(x => x).ToList());
-
-                        highlightedWords = TextFormatter.FormatText(paragraph, text, words);
+                        highlightedWords = TextFormatter.FormatText(paragraph, text, anonimizedWords.ToList());
                         flowDoc.Blocks.Add(paragraph);
                         string t = new TextRange(paragraph.ContentStart, paragraph.ContentEnd).Text;
                     }
@@ -167,7 +133,7 @@ namespace FileAnonimizationWpfVS
                     {
                         Console.WriteLine(exception);
                         FlowDocument flowDoc = new FlowDocument();
-                        richTextBox.Document = flowDoc;
+                        OriginalTextBox.Document = flowDoc;
                         Paragraph paragraph = new Paragraph();
                         paragraph.Inlines.Add(exception.ToString());
                         flowDoc.Blocks.Add(paragraph);
@@ -183,34 +149,8 @@ namespace FileAnonimizationWpfVS
             ExportToWord.Document worddoc;
             object wordobj = System.Reflection.Missing.Value;
             worddoc = wordapp.Documents.Add(ref wordobj);
-            wordapp.Selection.TypeText(TextBox2.Text);
+            wordapp.Selection.TypeText("this function is not yet implemented");
             wordapp = null;
-        }
-
-        private void rtb_MouseUp(object sender, MouseEventArgs e)
-        {
-            ContextMenu cm = new ContextMenu();
-            MenuItem item = new MenuItem();
-            item.Header = "Add to dictionary";
-            item.Click += new RoutedEventHandler(AddToDictinary);
-            cm.Items.Add(item);
-            ((RichTextBox)sender).ContextMenu = cm;
-
-        }
-
-        private void AddToDictinary(object sender, RoutedEventArgs e)
-        {
-            //TextWriter tw = new StreamWriter("dictionary.txt");
-            string workingDirectory = Environment.CurrentDirectory;
-            string fileDir = Directory.GetParent(workingDirectory).Parent.Parent.FullName;
-            string fileDest = System.IO.Path.Combine(fileDir, "dictionary.txt");
-            File.AppendAllText(fileDest, richTextBox.Selection.Text + Environment.NewLine);
-           
-        }
-
-        private void richTextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
         }
     }
 }

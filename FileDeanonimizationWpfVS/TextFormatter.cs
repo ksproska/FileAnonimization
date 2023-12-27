@@ -75,6 +75,9 @@ namespace FileAnonimizationWpfVS
                 paragraph.Inlines.Add(selectedWord);
                 startInx += wordWithInex.Item2.Length;
             }
+            var remainingText = text.Substring(startInx, text.Length - startInx);
+            Run remainingRun = new Run(remainingText);
+            paragraph.Inlines.Add(remainingRun);
 
             return highlighted;
         }
