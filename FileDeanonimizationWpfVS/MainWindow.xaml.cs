@@ -2,11 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.IO.IsolatedStorage;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -164,11 +162,6 @@ namespace FileAnonimizationWpfVS
                         highlightedWords = TextFormatter.FormatText(paragraph, text, words);
                         flowDoc.Blocks.Add(paragraph);
                         string t = new TextRange(paragraph.ContentStart, paragraph.ContentEnd).Text;
-
-                        ListBefore.ItemsSource = listBeforeItemsSource;
-                        ListAfter.ItemsSource = listAfterItemsSource;
-                        ButtonPlus.IsEnabled = true;
-                        ApplySelected();
                     }
                     catch (Exception exception)
                     {
@@ -183,85 +176,6 @@ namespace FileAnonimizationWpfVS
             }
         }
 
-        private void Plus_Button_Click(object sender, RoutedEventArgs e)
-        {
-            if (ListBefore.SelectedItem != null)
-            {
-                var listBeforeSelectedItem = ListBefore.SelectedItem as string;
-                listBeforeItemsSource.Remove(listBeforeSelectedItem);
-                ListBefore.UnselectAll();
-                ListAfter.Items.Add(listBeforeSelectedItem);
-
-                var selectedRuns = highlightedWords.Where(r => r.Text == listBeforeSelectedItem).ToList();
-                selectedRuns.ForEach(r => r.Background = Brushes.LightSalmon);
-            }
-            else if (richTextBox.Selection != null && richTextBox.Selection.Text != "")
-            {
-                ListAfter.Items.Add(richTextBox.Selection.Text);
-                ListBefore.UnselectAll();
-            }
-            else if (ListBefore.SelectedItem == null || ListBefore.SelectedItem == "" ||
-                     richTextBox.Selection == null || richTextBox.Selection.Text != "")
-            {
-                MessageBox.Show("Select item");
-            }
-
-            ButtonMinus.IsEnabled = true;
-            ApplySelected();
-        }
-
-        private void Minus_Button_Click(object sender, RoutedEventArgs e)
-        {
-            if (ListAfter.SelectedItem != null)
-            {
-                var listAfterSelectedItem = ListAfter.SelectedItem as string;
-                ListAfter.Items.Remove(listAfterSelectedItem);
-                ListAfter.UnselectAll();
-                listBeforeItemsSource.Add(listAfterSelectedItem);
-                
-                var selectedRuns = highlightedWords.Where(r => r.Text == listAfterSelectedItem).ToList();
-                selectedRuns.ForEach(r => r.Background = Brushes.Yellow);
-            }
-            else
-            {
-                MessageBox.Show("Select item");
-            }
-            ApplySelected();
-        }
-
-        private void ApplySelected()
-        {
-            if (ListAfter.Items != null)
-            {
-                var w = new List<Tuple<string, string>>();
-
-                for (int i = 0; i < ListAfter.Items.Count; i++)
-                {
-                    if (ListAfter.Items.GetItemAt(i) != null)
-                    {
-                        var t = new Tuple<string, string>(ListAfter.Items.GetItemAt(i).ToString(),
-                            _sensitiveDataFinder
-                                .GetSensitiveInformationTypeForSelectedWords(
-                                    ListAfter.Items.GetItemAt(i).ToString()
-                                )
-                        );
-                        w.Add(t);
-                    }
-                }
-
-                processedText =
-                    _sensitiveDataCensor.Anonymize(text, w.Select(x => (x.Item1, x.Item2)).ToArray(), _dictionary);
-                TextBox2.Text = processedText;
-            }
-            else
-            {
-                MessageBox.Show("Select items");
-            }
-
-            TextBox2.Text = processedText;
-            ButtonExport.IsEnabled = true;
-        }
-
         private void Export_Click(object sender, RoutedEventArgs e)
         {
             ExportToWord.Application wordapp = new ExportToWord.Application();
@@ -271,137 +185,6 @@ namespace FileAnonimizationWpfVS
             worddoc = wordapp.Documents.Add(ref wordobj);
             wordapp.Selection.TypeText(TextBox2.Text);
             wordapp = null;
-        }
-
-        private void Dictionary_Click(object sender, RoutedEventArgs e)
-        {
-
-            ListBox lb = new ListBox();
-            Window dict = new Window();
-            dict.Width = 300;
-            dict.Height = 300;
-            
-            string workingDirectory = Environment.CurrentDirectory;
-            string fileDir = Directory.GetParent(workingDirectory).Parent.Parent.FullName;
-            string fileDest = System.IO.Path.Combine(fileDir, "dictionary.txt");
-            string dictContent;
-            
-            using (var sr = new StreamReader(fileDest))
-            {
-                dictContent = sr.ReadToEnd();
-            }
-            
-            Grid grid = new Grid();
-            RowDefinition rowDef1 = new RowDefinition();
-            RowDefinition rowDef2 = new RowDefinition();
-            ColumnDefinition colDef1 = new ColumnDefinition();
-            ColumnDefinition colDef2 = new ColumnDefinition();
-            ColumnDefinition colDef3 = new ColumnDefinition();
-
-
-            grid.RowDefinitions.Add(rowDef1);
-            grid.RowDefinitions.Add(rowDef2);
-            grid.ColumnDefinitions.Add(colDef1);
-            grid.ColumnDefinitions.Add(colDef2);
-            grid.ColumnDefinitions.Add(colDef3);
-
-            grid.RowDefinitions[0].Height = new GridLength(7, GridUnitType.Star);
-            grid.ColumnDefinitions[0].Width = new GridLength(3, GridUnitType.Star);
-            grid.ColumnDefinitions[1].Width = new GridLength(3, GridUnitType.Star);
-            grid.ColumnDefinitions[2].Width = new GridLength(4, GridUnitType.Star);
-
-            List<string> dictList = new List<string>();
-            dictList = dictContent.Split("\n").ToList();
-            //dictList = dictContent.Split("\r").ToList();
-
-            dictList.Remove("");
-
-            if (dictList != null)
-            {
-                for(int i = 0; i < dictList.Count; i++)
-                {
-                    dictList[i] = dictList[i].Replace("\r", "");
-                }
-            }
-
-            
-
-            lb.ItemsSource = dictList;
-            
-            Button deleteBtn = new Button();
-            deleteBtn.Name = "Delete";
-            deleteBtn.Content = "Remove";
-            deleteBtn.Visibility = Visibility.Visible;
-           
-            
-            deleteBtn.Click += new RoutedEventHandler(delegate (Object o, RoutedEventArgs a)
-            {
-                ObservableCollection<string> dictWords = new ObservableCollection<string>();
-                foreach(string word in lb.Items) {
-                    dictWords.Add(word);
-                }
-                dictWords.Remove(lb.SelectedItem as string);
-                lb.ItemsSource = dictWords; 
-            });
-
-            Button saveBtn = new Button();
-            saveBtn.Name = "Save";
-            saveBtn.Content = "Save";
-            saveBtn.Visibility = Visibility.Visible;
-
-            saveBtn.Click += new RoutedEventHandler(delegate (Object o, RoutedEventArgs a)
-            {
-                ObservableCollection<string> dictWords = new ObservableCollection<string>();
-                StreamWriter writeFile;
-                writeFile = new StreamWriter(new IsolatedStorageFileStream(fileDest, FileMode.Truncate));
-                writeFile.Close();
-
-                if (!lb.Items.IsEmpty)
-                {
-                    File.AppendAllText(fileDest, (lb.Items[0] as string));
-                    for(int i = 1; i < lb.Items.Count; i++)
-                    {
-                        File.AppendAllText(fileDest, Environment.NewLine + (lb.Items[i] as string));
-                    }
-                }
-                dict.Close();
-            });
-
-            Button addBtn = new Button();
-            addBtn.Name = "Add";
-            addBtn.Content = "Add";
-            addBtn.Visibility = Visibility.Visible;
-
-            addBtn.Click += new RoutedEventHandler(delegate (Object o, RoutedEventArgs a)
-            {
-                ListAfter.Items.Add(lb.SelectedItem as string);
-                lb.UnselectAll();
-                ButtonMinus.IsEnabled = true;
-                ApplySelected();
-            });
-
-
-            Grid.SetRow(lb, 0);
-            Grid.SetRow(deleteBtn, 1);
-            Grid.SetRow(saveBtn, 1);
-            Grid.SetRow(addBtn, 1);
-            Grid.SetColumn(deleteBtn, 0);
-            Grid.SetColumn(saveBtn, 1);
-            Grid.SetColumn(addBtn, 2);
-            Grid.SetColumnSpan(lb, 3);
-
-            grid.Children.Add(lb);
-            grid.Children.Add(deleteBtn);
-            grid.Children.Add(saveBtn);
-            grid.Children.Add(addBtn);
-
-            dict.Content = grid;
-            dict.Show();
-        }
-
-        private void DeleteBtn_Click(object sender, RoutedEventArgs e)
-        {
-            
         }
 
         private void rtb_MouseUp(object sender, MouseEventArgs e)
