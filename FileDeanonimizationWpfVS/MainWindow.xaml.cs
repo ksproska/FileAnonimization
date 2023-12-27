@@ -16,7 +16,6 @@ namespace FileAnonimizationWpfVS
     public partial class MainWindow : Window
     {
         private AnonymizedDataFinder _anonymizedDataFinder;
-        private SensitiveDataCensor _sensitiveDataCensor;
         private bool isMousePressed = false;
         private TextPointer selectionStart;
         private TextPointer selectionEnd;
@@ -38,7 +37,6 @@ namespace FileAnonimizationWpfVS
             string surnamesPath = System.IO.Path.Combine(projectDirectory, "data", "surnames.csv");
             var csvDataReader = new CsvDataReader(namesPath, surnamesPath);
             _anonymizedDataFinder = new AnonymizedDataFinder();
-            _sensitiveDataCensor = new SensitiveDataCensor();
             selectedElement = new ObservableCollection<string>();
             unselectedElement = new ObservableCollection<string>();
         }
