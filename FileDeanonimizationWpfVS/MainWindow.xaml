@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="Text uncensor" MinHeight="550" MinWidth="800" Height="671" Width="966" Background="LightSkyBlue">
+        Title="Text uncensor" MinHeight="550" MinWidth="800" Height="671" Width="966" Background="LightCoral">
     <Grid Margin="5">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="50*" />
@@ -23,7 +23,7 @@
                 </Grid.RowDefinitions>
 
                 <!-- Upper half of the left panel -->
-                <Border Grid.Row="0" Background="SteelBlue" MouseMove="ellipse_MouseMove" BorderBrush="Transparent"
+                <Border Grid.Row="0" Background="DarkRed" MouseMove="ellipse_MouseMove" BorderBrush="Transparent"
                         Margin="5"
                         AllowDrop="True"
                         DragEnter="ellipse_DragEnter" DragLeave="ellipse_DragLeave"
@@ -72,7 +72,7 @@
                 <Border Grid.Row="2">
                     <Button x:Name="ButtonExport" IsEnabled="False" Content="Export" Click="Export_Click" Margin="5"
                             BorderBrush="Transparent" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
-                            Background="SteelBlue" Foreground="White" FontWeight="Bold" FontSize="17" />
+                            Background="DarkRed" Foreground="White" FontWeight="Bold" FontSize="17" />
 
                 </Border>
             </Grid>

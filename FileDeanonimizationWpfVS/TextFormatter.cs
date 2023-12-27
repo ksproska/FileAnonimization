@@ -71,7 +71,7 @@ namespace FileAnonimizationWpfVS
                 }
                 Run selectedWord = new Run(wordWithInex.Item2);
                 highlighted.Add(selectedWord);
-                selectedWord.Background = Brushes.Yellow;
+                selectedWord.Background = Brushes.LightPink;
                 paragraph.Inlines.Add(selectedWord);
                 startInx += wordWithInex.Item2.Length;
             }
