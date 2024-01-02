@@ -3,6 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+
+        xmlns:toolkit="http://schemas.microsoft.com/winfx/2006/xaml/presentation/toolkit"
         mc:Ignorable="d"
         Title="Text uncensor" MinHeight="550" MinWidth="800" Height="671" Width="966" Background="LightCoral">
     <Grid Margin="5">
@@ -59,7 +61,19 @@
                 </Grid.RowDefinitions>
 
                 <!-- Upper part of the right panel -->
-                <Border Grid.Row="0"></Border>
+                <Border Grid.Row="0">
+                    <toolkit:Chart Name="letterChart">
+                        <toolkit:Chart.Axes>
+                            <toolkit:LinearAxis Title="Count" Orientation="Y"/>
+                            <toolkit:CategoryAxis Title="Letters" Orientation="X"/>
+                            
+                        </toolkit:Chart.Axes>
+
+                        <toolkit:Chart.Series>
+                            <toolkit:ColumnSeries Title="Letter Counts" ItemsSource="{Binding}" DependentValuePath="Value" IndependentValuePath="Key"/>
+                        </toolkit:Chart.Series>
+                    </toolkit:Chart>
+                </Border>
 
                 <!-- Lower part of the right panel -->
                 <Border Grid.Row="1">

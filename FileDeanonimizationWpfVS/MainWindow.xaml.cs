@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -39,6 +40,10 @@ namespace FileAnonimizationWpfVS
             _anonymizedDataFinder = new AnonymizedDataFinder();
             selectedElement = new ObservableCollection<string>();
             unselectedElement = new ObservableCollection<string>();
+            
+
+            
+            
         }
 
         private void ellipse_MouseMove(object sender, MouseEventArgs e)
@@ -135,6 +140,15 @@ namespace FileAnonimizationWpfVS
                         Paragraph paragraph = new Paragraph();
                         paragraph.Inlines.Add(exception.ToString());
                         flowDoc.Blocks.Add(paragraph);
+                    }
+                    try
+                    {
+                        Dictionary<char, int> hist = LettersHistogram.Histogram( Regex.Replace(text, @"\s", "").ToLower());
+                        letterChart.ChartAreaStyle = new Style();
+                        letterChart.DataContext = hist.OrderBy(kvp => kvp.Key).ToList();
+                    }
+                    catch (Exception exception)
+                    {
                     }
                 }
             }
