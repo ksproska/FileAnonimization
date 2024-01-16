@@ -124,6 +124,7 @@ namespace FileAnonimizationWpfVS
                     try
                     {
                         anonimizedWords = _anonymizedDataFinder.GetAnonimizedWords(text);
+                        //ListBefore.Text = OriginalTextBox.Selection.Text;
                         FlowDocument flowDoc = new FlowDocument();
                         OriginalTextBox.Document = flowDoc;
 
@@ -154,15 +155,55 @@ namespace FileAnonimizationWpfVS
             }
         }
 
-        private void Export_Click(object sender, RoutedEventArgs e)
+        private void Generate_Click(object sender, RoutedEventArgs e)
         {
-            ExportToWord.Application wordapp = new ExportToWord.Application();
-            wordapp.Visible = true;
-            ExportToWord.Document worddoc;
-            object wordobj = System.Reflection.Missing.Value;
-            worddoc = wordapp.Documents.Add(ref wordobj);
-            wordapp.Selection.TypeText("this function is not yet implemented");
-            wordapp = null;
+            if (OriginalTextBox.Selection != null && OriginalTextBox.Selection.Text != "")
+            {
+                var selection = OriginalTextBox.Selection.Text;
+                var csvDataReader = GetCsvContent();
+                List<string> chosenNames = new List<string>();
+                
+                foreach (var name in csvDataReader.GetNames())
+                {
+                    if (selection.ToCharArray()[0].Equals(name.ToCharArray()[0]) && selection.Length==name.Length)
+                    {
+                        chosenNames.Add(name);
+                    }
+                }
+
+                ProposedList.ItemsSource = chosenNames;
+            }
         }
+
+        private void Generate_Click_Surnames(object sender, RoutedEventArgs e)
+        {
+            if (OriginalTextBox.Selection != null && OriginalTextBox.Selection.Text != "")
+            {
+                var selection = OriginalTextBox.Selection.Text;
+                var csvDataReader = GetCsvContent();
+                List<string> chosenNames = new List<string>();
+                
+                foreach (var surname in csvDataReader.GetSurnames())
+                {
+                    if (selection.ToCharArray()[0].Equals(surname.ToCharArray()[0]) && selection.Length==surname.Length)
+                    {
+                        chosenNames.Add(surname);
+                    }
+                }
+
+                ProposedListSurnames.ItemsSource = chosenNames;
+            }
+        }
+
+        private static CsvDataReader GetCsvContent()
+        {
+            string workingDirectory = Environment.CurrentDirectory;
+            string projectDirectory = Directory.GetParent(workingDirectory).Parent.Parent.FullName;
+            string namesPath = System.IO.Path.Combine(projectDirectory, "data", "names.csv");
+            string surnamesPath = System.IO.Path.Combine(projectDirectory, "data", "surnames.csv");
+            var csvDataReader = new CsvDataReader(namesPath, surnamesPath);
+            return csvDataReader;
+        }
+        
     }
 }

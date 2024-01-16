@@ -56,37 +56,69 @@
                 <!-- Define two rows with 40% and 60% height respectively -->
                 <Grid.RowDefinitions>
                     <RowDefinition Height="25*" />
-                    <RowDefinition Height="65*" />
+                    <!--<RowDefinition Height="35*" />-->
                     <RowDefinition Height="10*" />
+                    <RowDefinition Height="65*" />
                 </Grid.RowDefinitions>
 
                 <!-- Upper part of the right panel -->
                 <Border Grid.Row="0">
+                    <Grid>
                     <toolkit:Chart Name="letterChart">
+                            
                         <toolkit:Chart.Axes>
                             <toolkit:LinearAxis Title="Count" Orientation="Y"/>
                             <toolkit:CategoryAxis Title="Letters" Orientation="X"/>
-                            
                         </toolkit:Chart.Axes>
-
+                        
                         <toolkit:Chart.Series>
                             <toolkit:ColumnSeries Title="Letter Counts" ItemsSource="{Binding}" DependentValuePath="Value" IndependentValuePath="Key"/>
                         </toolkit:Chart.Series>
                     </toolkit:Chart>
+                        </Grid>
                 </Border>
+
+                <!-- Lower part of the right panel -->
+                <!--<Border Grid.Row="1">
+                    ~1~ Content for the lower part @1@
+                    
+                        <TextBox x:Name="ListBefore" BorderThickness="5" BorderBrush="Transparent"/>
+                    ~1~ <RichTextBox x:Name="DeanonymizedTextBox"
+                                 Margin="5" BorderThickness="5" BorderBrush="White" FontFamily="Consolas" /> @1@
+                </Border>-->
 
                 <!-- Lower part of the right panel -->
                 <Border Grid.Row="1">
-                    <!-- Content for the lower part -->
-                    <RichTextBox x:Name="DeanonymizedTextBox"
-                             Margin="5" BorderThickness="5" BorderBrush="White" FontFamily="Consolas" />
+                    <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="50*"/>
+                        <ColumnDefinition Width="50*"/>
+                    </Grid.ColumnDefinitions>
+                        <Border Grid.Column="0">
+                            <Button x:Name="ButtonExport" IsEnabled="True" Content="Generate names" Click="Generate_Click" Margin="5"
+                                    BorderBrush="Transparent" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                                    Background="DarkRed" Foreground="White" FontWeight="Bold" FontSize="17" />
+                        </Border>
+                        <Border Grid.Column="1">
+                            <Button x:Name="ButtonSurnames" IsEnabled="True" Content="Generate surnames" Click="Generate_Click_Surnames" Margin="5"
+                                    BorderBrush="Transparent" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                                    Background="DarkRed" Foreground="White" FontWeight="Bold" FontSize="17" />
+                        </Border>
+                    </Grid>
                 </Border>
-
-                <!-- Lower part of the right panel -->
                 <Border Grid.Row="2">
-                    <Button x:Name="ButtonExport" IsEnabled="False" Content="Export" Click="Export_Click" Margin="5"
-                            BorderBrush="Transparent" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
-                            Background="DarkRed" Foreground="White" FontWeight="Bold" FontSize="17" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="50*"/>
+                            <ColumnDefinition Width="50*"/>
+                        </Grid.ColumnDefinitions>
+                        <Border Grid.Column="0">
+                            <ListBox x:Name="ProposedList" d:ItemsSource="{d:SampleData ItemCount=5}" BorderThickness="5" BorderBrush="Transparent"/>
+                        </Border>
+                        <Border Grid.Column="1">
+                            <ListBox x:Name="ProposedListSurnames" d:ItemsSource="{d:SampleData ItemCount=5}" BorderThickness="5" BorderBrush="Transparent"/>
+                        </Border>
+                    </Grid>
 
                 </Border>
             </Grid>
